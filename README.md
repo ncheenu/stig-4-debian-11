@@ -1,10 +1,14 @@
-# STIG for Debian
+# STIG for Debian 11
 
 ## About
 
 This script is used to check DISA STIG(Security Technical Implementation Guides) for Debian 11
 Porting from [DISA RHEL 7 STIG V1 R1](https://raw.githubusercontent.com/hardenedlinux/STIG-OS-mirror/master/redhat-STIG-DOCs/U_Red_Hat_Enterprise_Linux_7_STIG_V1R1_Manual-xccdf.xml)  
 Benchmark Date: 27 Feb 2017
+
+This fork is from git@github.com:hardenedlinux/STIG-4-Debian.git
+
+Hello owners of git@github.com:hardenedlinux/STIG-4-Debian.git: If you need this branch in your repo, please feel free to pull this branch in.
 
 ## Upgrade
 
@@ -103,10 +107,5 @@ SELinux-related items (not matched):
 * SV-86595r1_rule
 * SV-86615r2_rule
 
-## Get deb package 
-### Signed package address 
-https://github.com/harbian/stig4debian/tree/master/stig4debian-package
 
-### Unsigned package address
-https://github.com/harbian/stig4debian/tree/master/stig4debian-unsigned-package 
 
