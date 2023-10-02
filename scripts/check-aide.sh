@@ -8,7 +8,10 @@ fi
 case $1 in
         acl)
 		if [ "$(grep -v "^#" /etc/aide/aide.conf  | grep -c acl)" -eq 0 ];then
-			exit 1
+			if [ ! -d /etc/aide/aide.conf.d ] || \
+				[ "$(grep -v "^#" /etc/aide/aide.conf.d/99_aide_root  | grep -c acl)" -eq 0 ];then
+				exit 1
+			fi
 		fi
         ;;
         sha512)

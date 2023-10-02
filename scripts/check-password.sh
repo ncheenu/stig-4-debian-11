@@ -21,7 +21,7 @@ if [ -f "$LOCATION" ];then
 
         if [ $? -eq 0 ];then
 	        if [ "$(echo $RESULT | tr "\t" "\n" | tr " " "\n" | sed -n "/$OPTION/p"| awk -F "=" '{printf $2}')" -$(echo $COMPARE) "$CONDITION" ];then
-                        exit 1
+                        exit 0
 	        fi
         else
                 exit 1

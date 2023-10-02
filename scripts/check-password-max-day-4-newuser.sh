@@ -1,6 +1,6 @@
 #!/bin/bash
 
-PASSWDMAXDAYS=$!
+PASSWDMAXDAYS=$1
 
 if [ -f "/etc/login.defs" ];then
 

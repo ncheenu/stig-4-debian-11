@@ -23,7 +23,7 @@ case $1 in
 
 	;;
 	remote_server)
-		ISSET=`grep "^remote_server" /etc/audisp/audisp-remote.conf |  grep -c '[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\}'`
+		ISSET=`grep "^remote_server" /etc/audit/audisp-remote.conf |  grep -c '[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\}'`
 		if [ "${ISSET}" -eq 1 ];then
 			:
 		else
@@ -31,7 +31,7 @@ case $1 in
 		fi
 	;;
 	enable_krb5)
-		ISSET=`grep -c "^enable_krb5.*=.*no" /etc/audisp/audisp-remote.conf`
+		ISSET=`grep -c "^enable_krb5.*=.*no" /etc/audit/audisp-remote.conf`
 		if [ "${ISSET}" -eq 1 ];then
 			:
 		else
@@ -39,8 +39,8 @@ case $1 in
 		fi
 	;;
 	disk_full_error_action)
-                if grep -i "disk_full_action.*syslog\|disk_full_action.*single\|disk_full_action.*halt" /etc/audit/auditd.conf;then
-			if grep -i "disk_error_action.*syslog\|disk_error_action.*single\|disk_error_action.*halt" /etc/audit/auditd.conf;then
+                if grep -i "disk_full_action.*syslog\|disk_full_action.*single\|disk_full_action.*halt" /etc/audit/audisp-remote.conf;then
+			if grep -i "disk_error_action.*syslog\|disk_error_action.*single\|disk_error_action.*halt" /etc/audit/audisp-remote.conf;then
 				:
 			else
 				exit 1
@@ -266,7 +266,7 @@ case $1 in
                 fi
         ;;
 	network_failure_action)
-                if grep -i "network_failure_action.*syslog\|network_failure_action.*single\|network_failure_action.*halt" /etc/audisp/audisp-remote.conf;then
+                if grep -i "network_failure_action.*syslog\|network_failure_action.*single\|network_failure_action.*halt" /etc/audit/audisp-remote.conf;then
 	                :
                 else
                 	exit 1

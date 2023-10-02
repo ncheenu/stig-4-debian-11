@@ -1,8 +1,8 @@
 #!/bin/bash
 case $1 in
 	showfailed)
-		if  grep pam_lastlog /etc/pam.d/login | grep -v "^#";then
-			INTERVAL=`grep pam_lastlog /etc/pam.d/login | grep -v "^#" | grep -c showfailed`
+		if  grep pam_lastlog /etc/pam.d/common-session | grep -v "^#";then
+			INTERVAL=`grep pam_lastlog /etc/pam.d/common-session | grep -v "^#" | grep -c showfailed`
 			if [ "${INTERVAL}" -ne 1 ];then
 				exit 1
 			fi
@@ -11,3 +11,4 @@ case $1 in
 		fi
 	;;
 esac
+exit 0

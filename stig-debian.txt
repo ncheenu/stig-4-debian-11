@@ -407,8 +407,7 @@ Fixtext: Configure the operating system to define default permissions for all au
 Rule ID: SV-86621r2_rule
 Severity: high
 Rule Title: The operating system must be a vendor supported release.
-Description: An operating system release is considered "supported" if the vendor continues to provide security patches for the product. With an unsupported release, it will not be possible to resolve security issues discovered in the system software.
-Check_content: Verify the version of the operating system is vendor supported.\n\nCheck the version of the operating system with the following command:\n\n# # cat /etc/issue\n\nDebian GNU/Linux 9 \n \l\n\n\n\nIf the release is not supported by the vendor, this is a finding.
+Description: An operating system release is considered "supported" if the vendor continues to provide security patches for the product. With an unsupported release, it will not be possible to resolve security issues discovered in the system software.  Check_content: Verify the version of the operating system is vendor supported.\n\nCheck the version of the operating system with the following command:\n\n# # cat /etc/issue\n\nDebian GNU/Linux 11 \n \l\n\n\n\nIf the release is not supported by the vendor, this is a finding.
 Fixtext: Upgrade to a supported version of the operating system.
 
 Rule ID: SV-86623r3_rule
@@ -1092,7 +1091,7 @@ Fixtext: Configure the operating system to generate audit records when successfu
 
 Rule ID: SV-86805r2_rule
 Severity: medium
-Rule Title: All uses of the pt_chown command must be audited. pt_chown in the glibc package before 2.19-18+deb8u4 on Debian jessie. In the Debian stretch has been abandoned.
+Rule Title: All uses of the pt_chown command must be audited. pt_chown in the glibc package before 2.19-18+deb8u4 on Debian jessie. Post Debian Stretch the command has been abandoned.
 Description: Reconstruction of harmful events or forensic analysis is not possible if audit records do not contain enough information.\n\nAt a minimum, the organization must audit the full-text recording of privileged commands. The organization must maintain audit trails in sufficient detail to reconstruct events to determine the cause and impact of compromise.\n\n
 Check_content: Verify the operating system generates audit records when successful/unsuccessful attempts to use the "pt_chown" command occur. \n\nCheck for the following system call being audited by performing the following command to check the file system rules in "/etc/audit/audit.rules": \n\n# grep -i /usr/libexec/pt_chown /etc/audit/audit.rules\n\n-a always,exit -F path=/usr/libexec/pt_chown -F perm=x -F auid>=1000 -F auid!=4294967295 -k privileged_terminal\n\nIf the command does not return any output, this is a finding.
 Fixtext: Configure the operating system to generate audit records when successful/unsuccessful attempts to use the "pt_chown" command occur. \n\nAdd or update the following rule in "/etc/audit/rules.d/audit.rules": \n\n-a always,exit -F path=/usr/libexec/pt_chown -F perm=x -F auid>=1000 -F auid!=4294967295 -k privileged_terminal\n\nThe audit daemon must be restarted for the changes to take effect.

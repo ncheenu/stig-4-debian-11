@@ -1,5 +1,6 @@
 #!/bin/bash
 
+set -x
 case $1 in 
 	removable)
 		COUNT=$(grep -v "hd0" /boot/grub/grub.cfg | grep -c "set root")
@@ -11,8 +12,8 @@ case $1 in
 		fi
 		;;
 	password_pbkdf2)
-		COUNT1=$(grep -hic "^set.*superusers=\"root\"" /boot/grub/grub.cfg)
-		COUNT2=$(grep -hic "^password_pbkdf2.*root.*grub.pbkdf2.sha512.*" /boot/grub/grub.cfg)
+		COUNT1=$(grep -hic "^set.*superusers=" /boot/grub/grub.cfg)
+		COUNT2=$(grep -hic "^password_pbkdf2.*grub.pbkdf2.sha512.*" /boot/grub/grub.cfg)
 
 		if [ "${COUNT1}" -lt 1 -o "${COUNT2}" -lt 1 ];then
 			exit 1

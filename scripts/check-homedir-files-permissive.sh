@@ -1,6 +1,8 @@
 #!/bin/bash
-for line in $(egrep ":[0-9]{4}:" /etc/passwd | cut -d: -f6)
+set -x
+for i_user in $(cat /etc/shadow | grep -v ^.*:[!*] |cut -d ":" -f1)
 do
+	line=$(grep ^${i_user}: /etc/passwd | cut -d: -f6)
 	if [ ! -e "${line}" ];then
 		exit 1
 	else

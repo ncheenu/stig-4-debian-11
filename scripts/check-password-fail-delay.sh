@@ -1,6 +1,6 @@
 #!/bin/bash
 
-if [ -f "/etc/login.def" ];then
+if [ -f "/etc/login.defs" ];then
         VFAIL_DELAY=$1 # seconds
 
         RESULT=$(sed -e '/^#/d' -e '/^[ \t][ \t]*#/d' -e 's/#.*$//' -e '/^$/d' /etc/login.defs | grep FAIL_DELAY)

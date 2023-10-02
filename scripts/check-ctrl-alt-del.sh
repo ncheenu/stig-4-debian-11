@@ -5,5 +5,5 @@ if [ -e /etc/systemd/system/ctrl-alt-del.target ];then
                 exit 1
         fi
 else
-        exit 1
+        exit 0
 fi

@@ -71,6 +71,9 @@ case $1 in
 		fi
 	;;
 	RhostsRSAAuthentication)
+		# RhostsRSAAuthentication option deprecated in latest SSH
+		# Not applicable for Debian 11
+		exit 0
 		if grep RhostsRSAAuthentication /etc/ssh/sshd_config | grep -v "^#";then
 			SETVALUE=`grep RhostsRSAAuthentication /etc/ssh/sshd_config | grep -v "^#" | awk '{printf $2}'`
 			if [ "${SETVALUE}" == "yes" ];then
@@ -174,6 +177,8 @@ case $1 in
                 fi
 	;;
 	UsePrivilegeSeparation)
+		# UsePrivilegeSeparation deprecated in Debian 11
+		exit 0
 		if grep UsePrivilegeSeparation /etc/ssh/sshd_config | grep -v "^#";then
                         SETVALUE=`grep UsePrivilegeSeparation /etc/ssh/sshd_config | grep -v "^#" | awk '{printf $2}'`
                         if [ "${SETVALUE}" != "yes" -a "${SETVALUE}" != "sandbox" ];then

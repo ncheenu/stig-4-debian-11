@@ -2,13 +2,13 @@
 
 ## About
 
-This script is used to check DISA STIG(Security Technical Implementation Guides) for Debian 9
+This script is used to check DISA STIG(Security Technical Implementation Guides) for Debian 11
 Porting from [DISA RHEL 7 STIG V1 R1](https://raw.githubusercontent.com/hardenedlinux/STIG-OS-mirror/master/redhat-STIG-DOCs/U_Red_Hat_Enterprise_Linux_7_STIG_V1R1_Manual-xccdf.xml)  
 Benchmark Date: 27 Feb 2017
 
 ## Upgrade
 
-It has been a long time since we have updated STIG for Debian's framework. I think it's time to upgrade for the release of Debian 9 stable.
+It has been a long time since we have updated STIG for Debian's framework. I think it's time to upgrade for the release of Debian 11 stable.
 
 ## HTML report output supported
 

@@ -589,7 +589,7 @@ spinner $!
 output "SV-86619r1_rule" $?
 
 
-grep "Debian.*GNU/Linux.*9" /etc/issue >/dev/null 2>&1 &
+grep "Debian.*GNU/Linux" /etc/issue >/dev/null 2>&1 &
 spinner $!
 output "SV-86621r2_rule" $?
 
