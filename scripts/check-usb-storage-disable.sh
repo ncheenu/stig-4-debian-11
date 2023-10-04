@@ -1,8 +1,8 @@
 #!/bin/bash
+set -x
+COUNT=`grep -ic "install.*usb-storage.*/bin/true" /etc/modprobe.d/* | grep -v :0$ | wc -l`
 
-COUNT=`grep -ic "install.*usb-storage.*/bin/true" /etc/modprobe.d/*`
-
-if [ "${COUNT}" -ne 1 ];then 
+if [ "${COUNT}" -lt 1 ];then 
 	exit 1
 fi
 

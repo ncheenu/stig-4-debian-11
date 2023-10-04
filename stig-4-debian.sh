@@ -1341,7 +1341,7 @@ spinner $!
 output "SV-87811r2_rule" $?
 
 
-if mount | grep ".*type.*nfs";then
+if mount | grep -w ".*type.*nfs";then
 	bash scripts/check-nfs.sh >/dev/null 2>&1 &
 	spinner $!
 	output "SV-87813r1_rule" $?
