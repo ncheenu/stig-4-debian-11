@@ -16,13 +16,13 @@ case $1 in
 		fi
 	;;
 	cronlog)
-		conf_file=$(grep "^cron\.\*.*/var/log/cron.log" /etc/rsyslog.conf /etc/rsyslog.d/*.conf | head -1 | cut -d ":" -f1)
+		conf_file=$(grep "^cron\.\*" /etc/rsyslog.conf /etc/rsyslog.d/*.conf | head -1 | cut -d ":" -f1)
 		if [ -z "${conf_file}" ]
 		then
 			exit 1
 		fi
-		if grep "^cron\.\*.*/var/log/cron.log" ${conf_file};then
-			LINE1=`grep "^cron\.\*.*/var/log/cron.log" ${conf_file} -n | awk -F : '{print $1}'`
+		if grep "^cron\.\*" ${conf_file};then
+			LINE1=`grep "^cron\.\*" ${conf_file} -n | awk -F : '{print $1}'`
 			if grep "^\*\.\*.*~" ${conf_file};then
 				LINE2=`grep "^\*\.\*.*~" ${conf_file}  -n | awk -F : '{print $1}'`
 				if [ "${LINE1}" -gt "${LINE2}" ];then
