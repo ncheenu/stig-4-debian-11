@@ -3,8 +3,11 @@
 ## About
 
 This script is used to check DISA STIG(Security Technical Implementation Guides) for Debian 11
-Porting from [DISA RHEL 7 STIG V1 R1](https://raw.githubusercontent.com/hardenedlinux/STIG-OS-mirror/master/redhat-STIG-DOCs/U_Red_Hat_Enterprise_Linux_7_STIG_V1R1_Manual-xccdf.xml)  
-Benchmark Date: 27 Feb 2017
+Porting from [DISA Ubuntu 24.04 STIG V1 R1]:
+    XML: STIG/U_CAN_Ubuntu_24-04_LTS_STIG_V1R1_Manual-xccdf.xml.
+    URL: https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_CAN_Ubuntu_24-04_LTS_V1R1_STIG.zip)
+
+Benchmark Date: 21 Feb 2025
 
 This fork is from git@github.com:hardenedlinux/STIG-4-Debian.git
 
@@ -13,6 +16,7 @@ Hello owners of git@github.com:hardenedlinux/STIG-4-Debian.git: If you need this
 ## Upgrade
 
 It has been a long time since we have updated STIG for Debian's framework. I think it's time to upgrade for the release of Debian 11 stable.
+This time, it uses the Ubuntu 24.04 LTS STIG instead of RHEL 7
 
 ## HTML report output supported
 
@@ -35,7 +39,7 @@ Default report is output in current directory(STIG-for-Debian-*.html)
 
 STIG for Debian Compliance Checking Tools (v2.0)
 
-Ported from DISA RHEL 7 STIG
+Ported from DISA Ubuntu 24.04 LTS V1 R1 STIG
 
 ```
 
@@ -51,7 +55,7 @@ Ported from DISA RHEL 7 STIG
 
 ## How to get involved
 
-This is a new framework release only. Not many check rules have been ported from DISA RHEL 7 STIG yet.
+This is a new framework release only. Not many check rules have been ported from DISA Ubuntu 24.04 LTS V1 R1 STIG yet.
 
 We (and you) will fill it up soon.
 
