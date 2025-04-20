@@ -1,3 +1,4 @@
+#!/bin/bash
 #apt-key finger set config 
 #reference https://ftp-master.debian.org/keys.html 
 APTKEYFINGER1="1F89 983E 0081 FDE0 18F3  CC96 73A4 F27B 8DD4 7936"

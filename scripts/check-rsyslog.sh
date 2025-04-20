@@ -14,4 +14,9 @@ case $1 in
 			exit 1
 		fi
 	;;
+	authlog)
+		if grep -hrE 'auth|authpriv|daemon' /etc/rsyslog.conf | grep -v "^#"; then
+			exit 1
+		fi
+	;;
 esac

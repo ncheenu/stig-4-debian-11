@@ -24,6 +24,9 @@ case $1 in
                 if [ "$(sed -e '/^#/d' -e '/^[ \t][ \t]*#/d' -e 's/#.*$//' -e '/^$/d' /etc/ssh/sshd_config | grep -i PermitEmptyPasswords | awk '{print $2}')" != "no" ];then
                         exit 1
                 fi
+                if [ "$(sed -e '/^#/d' -e '/^[ \t][ \t]*#/d' -e 's/#.*$//' -e '/^$/d' /etc/ssh/sshd_config | grep -i PermitUserEnvironment | awk '{print $2}')" != "no" ];then
+                        exit 1
+                fi
         ;;
         emptypasswordenvironment)
                 if [ "$(sed -e '/^#/d' -e '/^[ \t][ \t]*#/d' -e 's/#.*$//' -e '/^$/d' /etc/ssh/sshd_config | grep -i PermitEmptyPasswords | awk '{print $2}')" != "no" ];then
@@ -31,7 +34,7 @@ case $1 in
                 fi
         ;;
 	ciphers)
-		if grep -i "Ciphers.*aes128-ctr\|Ciphers.*aes256-ctr\|Ciphers.*aes192-ctr" /etc/ssh/sshd_config;then
+		if grep -i "^[[:space:]]*Ciphers aes256-gcm@openssh.com,aes128-gcm@openssh.com,aes256-ctr,aes128-ctr" /etc/ssh/sshd_config; then
 			:
 		else
 			exit 1 
@@ -63,7 +66,7 @@ case $1 in
 	ClientAliveInterval)
 		if grep ClientAliveInterval /etc/ssh/sshd_config | grep -v "^#";then
 			INTERVAL=`grep ClientAliveInterval /etc/ssh/sshd_config | grep -v "^#" | awk '{printf $2}'`
-			if [ ${INTERVAL} -lt 600 ];then
+			if [ ${INTERVAL} -ne 600 ];then
 				exit 1
 			fi
 		else
@@ -86,7 +89,7 @@ case $1 in
 	ClientAliveCountMax)
 		if grep ClientAliveCountMax /etc/ssh/sshd_config | grep -v "^#";then
 			SETVALUE=`grep ClientAliveCountMax /etc/ssh/sshd_config | grep -v "^#" | awk '{printf $2}'`
-			if [ ${SETVALUE} -ne 0 ];then
+			if [ ${SETVALUE} -ne 1 ];then
 				exit 1
 			fi
 		else
@@ -113,6 +116,16 @@ case $1 in
 			exit 1
 		fi
 	;;
+	pam)
+		if grep UsePAM /etc/ssh/sshd_config | grep -v "^#";then
+			SETVALUE=`grep UsePAM /etc/ssh/sshd_config | grep -v "^#" | awk '{printf $2}'`
+			if [ "${SETVALUE}" != "yes" ];then
+				exit 1
+			fi
+		else
+			exit 1
+		fi
+	;;
 	IgnoreUserKnownHosts)
 		if grep IgnoreUserKnownHosts /etc/ssh/sshd_config | grep -v "^#";then
 			SETVALUE=`grep IgnoreUserKnownHosts /etc/ssh/sshd_config | grep -v "^#" | awk '{printf $2}'`
@@ -124,7 +137,14 @@ case $1 in
 		fi
 	;;
 	macs)
-		if grep -i "MACs.*hmac-sha2-256\|MACs.*hmac-sha2-512"  /etc/ssh/sshd_config;then
+		if grep -i "^[[:space::]]*MACs hmac-sha2-512-etm@openssh.com,hmac-sha2-256-etm@openssh.com,hmac-sha2-512,hmac-sha2-256"  /etc/ssh/sshd_config;then
+			:
+		else
+			exit 1
+		fi
+	;;
+	kex)
+		if grep -i "^[[:space::]]*KexAlgorithms ecdh-sha2-nistp521,ecdh-sha2-nistp384,ecdh-sha2-nistp256,diffie-hellman-group-exchange-sha256,diffie-hellman-group16-sha512,diffie-hellman-group14-sha256$"  /etc/ssh/sshd_config;then
 			:
 		else
 			exit 1
@@ -207,6 +227,20 @@ case $1 in
                 else
                         exit 1
                 fi
+        ;;
+	X11UseLocalhost)
+		if grep X11UseLocalhost /etc/ssh/sshd_config | grep -v "^#";then
+                        SETVALUE=`grep X11UseLocalhost /etc/ssh/sshd_config | grep -v "^#" | awk '{printf $2}'`
+                        if [ "${SETVALUE}" != "yes" ];then
+                                exit 1
+                        fi
+                else
+                        exit 1
+                fi
+        ;;
+	enabled)
+		if ! systemctl is-enabled ssh; then exit 1; fi
+		if ! systemctl is-active ssh; then exit 1; fi
         ;;
 
 esac

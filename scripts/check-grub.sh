@@ -27,6 +27,12 @@ case $1 in
 			exit 1
 		fi
 	;;
+	audit)
+		COUNT=$(grep "^\s*linux" /boot/grub/grub.cfg | grep -cv audit=1)
+		if [ $COUNT -gt 0 ]; then
+			exit 1
+		fi
+	;;
 esac
 
 

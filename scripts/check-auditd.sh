@@ -1,7 +1,53 @@
 #!/bin/bash
 
 case $1 in
-        active)
+    permissions)
+        if [ $(find /etc/audit/ -type f -perm /137 | wc -l) -gt 0 ]; then
+            exit 1
+        else
+            :
+        fi
+    ;;
+    log-permissions)
+        if [ $(find /var/log/audit/ -type ${2} -type f -perm ${3} | wc -l) -gt 0 ]; then
+            exit 1
+        else
+            :
+        fi
+    ;;
+    bin-permissions)
+        if [ $(find /sbin/auditctl  /sbin/aureport  /sbin/ausearch \
+            /sbin/autrace /sbin/auditd /sbin/audispd* /sbin/augenrules \
+            -type f -perm /022 | wc -l) -gt 0 ]; then
+            exit 1
+        else
+            :
+        fi
+    ;;
+    bin-ownership)
+        if [ $(find /sbin/auditctl  /sbin/aureport  /sbin/ausearch \
+            /sbin/autrace /sbin/auditd /sbin/audispd* /sbin/augenrules \
+            -type f -not -${2} root | wc -l) -gt 0 ]; then
+            exit 1
+        else
+            :
+        fi
+    ;;
+    ownership)
+        if [ $(find /etc/audit -type f ! -${2} root | wc -l) -gt 0 ]; then
+            exit 1
+        else
+            :
+        fi
+    ;;
+    log-ownership)
+        if [ $(find /var/log/audit -type f ! -${2} root | wc -l) -gt 0 ]; then
+            exit 1
+        else
+            :
+        fi
+    ;;
+    active)
 		ACTIVE=`dpkg -s auditd | grep -ci "Status:.*install.*ok.*installed"`
 		if [ "${ACTIVE}" -eq 1 ];then
 			:
@@ -20,7 +66,6 @@ case $1 in
 				exit 1
 			fi
 		fi
-
 	;;
 	remote_server)
 		ISSET=`grep "^remote_server" /etc/audit/audisp-remote.conf |  grep -c '[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\}'`
@@ -105,8 +150,48 @@ case $1 in
                         exit 1
                 fi
         ;;
+	wtmp)
+		COUNT=`auditctl -l | grep -c /var/log/wtmp`
+                if [ "${COUNT}" -eq 1 ];then
+                        :
+                else
+                        exit 1
+                fi
+        ;;
+	btmp)
+		COUNT=`auditctl -l | grep -c /var/log/btmp`
+                if [ "${COUNT}" -eq 1 ];then
+                        :
+                else
+                        exit 1
+                fi
+        ;;
+	utmp)
+		COUNT=`auditctl -l | grep -c /var/run/utmp`
+                if [ "${COUNT}" -eq 1 ];then
+                        :
+                else
+                        exit 1
+                fi
+        ;;
 	passwd)
-		COUNT=`auditctl -l | grep -c /usr/bin/passwd`
+		COUNT=`auditctl -l | grep -c -P "/usr/bin/passwd\b"`
+                if [ "${COUNT}" -eq 1 ];then
+                        :
+                else
+                        exit 1
+                fi
+        ;;
+	unixupdate)
+		COUNT=`auditctl -l | grep -c -P "/usr/sbin/unix_update\b"`
+                if [ "${COUNT}" -eq 1 ];then
+                        :
+                else
+                        exit 1
+                fi
+        ;;
+	fdisk)
+		COUNT=`auditctl -l | grep -cwE "/usr/sbin/fdisk|/usr/sbin/parted"`
                 if [ "${COUNT}" -eq 1 ];then
                         :
                 else
@@ -137,8 +222,24 @@ case $1 in
                         exit 1
                 fi
         ;;
+	usermod)
+		COUNT=`auditctl -l | grep -c "/usr/bin/usermod\b"`
+                if [ "${COUNT}" -eq 1 ];then
+                        :
+                else
+                        exit 1
+                fi
+        ;;
 	su)
 		COUNT=`auditctl -l | grep -c -P "/bin/su\b"`
+                if [ "${COUNT}" -eq 1 ];then
+                        :
+                else
+                        exit 1
+                fi
+        ;;
+	chfn)
+		COUNT=`auditctl -l | grep -c -P "/usr/bin/chfn\b"`
                 if [ "${COUNT}" -eq 1 ];then
                         :
                 else
@@ -153,8 +254,88 @@ case $1 in
                         exit 1
                 fi
         ;;
+	chcon)
+		COUNT=`auditctl -l | grep -c -P "/usr/bin/chcon\b"`
+                if [ "${COUNT}" -eq 1 ];then
+                        :
+                else
+                        exit 1
+                fi
+        ;;
+	setfacl)
+		COUNT=`auditctl -l | grep -c -P "/usr/bin/setfacl\b"`
+                if [ "${COUNT}" -eq 1 ];then
+                        :
+                else
+                        exit 1
+                fi
+        ;;
+	chacl)
+		COUNT=`auditctl -l | grep -c -P "/usr/bin/chacl\b"`
+                if [ "${COUNT}" -eq 1 ];then
+                        :
+                else
+                        exit 1
+                fi
+        ;;
+	apparmor_parser)
+		COUNT=`auditctl -l | grep -c -P "/sbin/apparmor_parser\b"`
+                if [ "${COUNT}" -eq 1 ];then
+                        :
+                else
+                        exit 1
+                fi
+        ;;
 	f-sudoers)
 		COUNT=`auditctl -l | grep -c /etc/sudoers`
+                if [ "${COUNT}" -ge 1 ];then
+                        :
+                else
+                        exit 1
+                fi
+        ;;
+	xattrs)
+		COUNT=`auditctl -l | grep -c xattr`
+                if [ "${COUNT}" -ge 1 ];then
+                        :
+                else
+                        exit 1
+                fi
+        ;;
+	authlog)
+		COUNT=`auditctl -l | grep -c /var/log/auth.log`
+                if [ "${COUNT}" -ge 1 ];then
+                        :
+                else
+                        exit 1
+                fi
+        ;;
+	lastlog)
+		COUNT=`auditctl -l | grep -c /var/log/lastlog`
+                if [ "${COUNT}" -ge 1 ];then
+                        :
+                else
+                        exit 1
+                fi
+        ;;
+	chown)
+		COUNT=`auditctl -l | grep -c chown`
+                if [ "${COUNT}" -ge 1 ];then
+                        :
+                else
+                        exit 1
+                fi
+        ;;
+	chmod)
+		COUNT=`auditctl -l | grep -c chmod`
+                if [ "${COUNT}" -ge 1 ];then
+                        :
+                else
+                        exit 1
+                fi
+        ;;
+	creat)
+		COUNT=`auditctl -l | grep -c creat`
                 if [ "${COUNT}" -ge 1 ];then
                         :
                 else
@@ -186,7 +367,7 @@ case $1 in
                 fi
         ;;
 	mount)
-		COUNT=`auditctl -l | grep -c /bin/mount`
+		COUNT=`auditctl -l | grep -c "/bin/mount\b"`
                 if [ "${COUNT}" -eq 1 ];then
                         :
                 else
@@ -194,7 +375,15 @@ case $1 in
                 fi
         ;;
 	umount)
-		COUNT=`auditctl -l | grep -c /bin/umount`
+		COUNT=`auditctl -l | grep -c "/bin/umount\b"`
+                if [ "${COUNT}" -eq 1 ];then
+                        :
+                else
+                        exit 1
+                fi
+        ;;
+	ssh-agent)
+		COUNT=`auditctl -l | grep -c "/usr/bin/ssh-agent\b"`
                 if [ "${COUNT}" -eq 1 ];then
                         :
                 else
@@ -211,6 +400,14 @@ case $1 in
         ;;
 	postqueue)
 		COUNT=`auditctl -l | grep -c /usr/sbin/postqueue`
+                if [ "${COUNT}" -eq 1 ];then
+                        :
+                else
+                        exit 1
+                fi
+        ;;
+	pam_timestamp)
+		COUNT=`auditctl -l | grep -c /usr/sbin/pam_timestamp_check`
                 if [ "${COUNT}" -eq 1 ];then
                         :
                 else
@@ -251,6 +448,14 @@ case $1 in
         ;;
 	modprobe)
 		COUNT=`auditctl -l | grep -c /sbin/modprobe`
+                if [ "${COUNT}" -eq 1 ];then
+                        :
+                else
+                        exit 1
+                fi
+        ;;
+	kmod)
+		COUNT=`auditctl -l | grep -c /usr/bin/kmod`
                 if [ "${COUNT}" -eq 1 ];then
                         :
                 else
@@ -331,4 +536,57 @@ case $1 in
                         exit 1
                 fi
 	;;
+	execve-priv)
+		COUNT=`auditctl -l | grep -c execve.*key=execpriv`
+                if [ "${COUNT}" -eq 1 ];then
+                        :
+                else
+                        exit 1
+                fi
+	;;
+	journal)
+		COUNT=`auditctl -l | grep -c journal`
+                if [ "${COUNT}" -eq 1 ];then
+                        :
+                else
+                        exit 1
+                fi
+	;;
+	init_module)
+		COUNT=`auditctl -l | grep -c init_module`
+                if [ "${COUNT}" -ge 1 ];then
+                        :
+                else
+                        exit 1
+                fi
+	;;
+	delete_module)
+		COUNT=`auditctl -l | grep -c delete_module`
+                if [ "${COUNT}" -ge 1 ];then
+                        :
+                else
+                        exit 1
+                fi
+	;;
+	unlink)
+		COUNT=`auditctl -l | grep -c unlink`
+                if [ "${COUNT}" -ge 1 ];then
+                        :
+                else
+                        exit 1
+                fi
+	;;
+	maintenance)
+		COUNT=`auditctl -l | grep -c sudo.log.*wa.*maintenance`
+                if [ "${COUNT}" -eq 1 ];then
+                        :
+                else
+                        exit 1
+                fi
+	;;
+    immute-check)
+        if [ $(grep -E '^-e 2' /etc/audit/audit.rules | wc -l) -lt 1 ]; then
+            exit 1
+        fi
+    ;;
 esac

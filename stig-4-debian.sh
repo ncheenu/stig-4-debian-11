@@ -33,7 +33,7 @@ Default report is output in current directory(STIG-for-Debian-*.(html|log))
 
 STIG for Debian Compliance Checking Tools (v$VERSION)
 
-Ported from DISA RHEL 7 STIG
+Ported from DISA Ubuntu 24.04 V1 R1 STIG
 EOF
 }
 
@@ -242,6 +242,7 @@ function output() {
         NORMAL=$(tput sgr0)
 
         EXIT_STATUS=$2
+	PASS_NOTE=${3:-}
         LOCATION=$(sed -n "/$1/=" $TEXTFILE)
         #output rule id
         RULE_ID=$(sed -n "$LOCATION"p "$TEXTFILE" | sed "s/Rule ID: //" )
@@ -263,7 +264,12 @@ function output() {
 	    #check exit status
             if [ $EXIT_STATUS -eq 0 ];then
 		printf "%s %s\n"  "$GREEN$BOLD[ PASS ]$NORMAL" "$RULE_TITLE"
-                STATUS="PASS"
+		if [ ! -z ${PASS_NOTE} ]
+		then
+			STATUS="PASS-${PASS_NOTE}"
+		else
+			STATUS="PASS"
+		fi
               	((SUCCESS_FLAG++))
             else
 	        printf "%s %s\n"  "$RED$BOLD[ FAIL ]$NORMAL" "$RULE_TITLE"
@@ -277,7 +283,12 @@ function output() {
         if [ $ASCII = "1" ];then
 		if [ $EXIT_STATUS -eq 0 ];then
 			printf "%s %s\n"  "$GREEN$BOLD[ PASS ]$NORMAL" "$RULE_TITLE"
-	        	STATUS="PASS"
+			if [ ! -z ${PASS_NOTE} ]
+			then
+				STATUS="PASS-${PASS_NOTE}"
+			else
+				STATUS="PASS"
+			fi
 			((SUCCESS_FLAG++))
 		else
 			printf "%s %s\n"  "$RED$BOLD[ FAIL ]$NORMAL" "$RULE_TITLE"
@@ -290,7 +301,12 @@ function output() {
 	if [ $CATCOLOR = "1" ];then
 		if [ $EXIT_STATUS -eq 0 ];then
 			printf "%s %s\n"  "$GREEN$BOLD[ PASS ]$NORMAL" "$RULE_TITLE"
-	        	STATUS="$GREEN$BOLD""PASS""$NORMAL"
+			if [ ! -z ${PASS_NOTE} ]
+			then
+	        		STATUS="$GREEN$BOLD""PASS-${PASS_NOTE}""$NORMAL"
+			else
+	        		STATUS="$GREEN$BOLD""PASS""$NORMAL"
+			fi
 			((SUCCESS_FLAG++))
 		else
 			printf "%s %s\n"  "$RED$BOLD[ FAIL ]$NORMAL" "$RULE_TITLE"
@@ -352,1050 +368,709 @@ fi
 
 ######CAT I
 
-bash scripts/check-package-verify.sh >/dev/null 2>&1 &
+# Ubuntu
+bash scripts/check-packages.sh telnetd >/dev/null 2>&1 &
 spinner $!
-output "SV-86479r2_rule" $?
+output "SV-270647r1066430_rule" $?
 
+bash scripts/check-packages.sh rsh-server >/dev/null 2>&1 &
+spinner $!
+output "SV-270648r1066433_rule" $?
+
+bash scripts/check-packages.sh ssh-server >/dev/null 2>&1 &
+spinner $!
+output "SV-270665r1067133_rule" $?
+
+bash scripts/check-ssh.sh enabled >/dev/null 2>&1 &
+spinner $!
+output "SV-270666r1066487_rule" $?
+
+bash scripts/check-grub.sh password_pbkdf2 >/dev/null 2>&1 &
+spinner $!
+output "SV-270675r1066514_rule" $?
+
+bash scripts/check-ssh.sh X11Forwarding  >/dev/null 2>&1 &
+spinner $!
+output "SV-270708r1066613_rule" $?
+
+if [ ${GNOMEINSTALL} -ne 1 ];then
+	output "SV-270711r1066622_rule" 0 N/A
+	output "SV-270712r1068363_rule" 0 N/A
+fi
+
+bash scripts/check-nullok.sh shadow>/dev/null 2>&1 &
+spinner $!
+output "SV-270713r1066628_rule" $?
+
+bash scripts/check-nullok.sh password>/dev/null 2>&1 &
+spinner $!
+output "SV-270714r1067119_rule" $?
+
+bash scripts/check-ssh.sh emptypassword >/dev/null 2>&1 &
+spinner $!
+output "SV-270717r1067177_rule" $?
+
+bash scripts/check-sssd.sh ldap >/dev/null 2>&1 &
+spinner $!
+output "SV-270736r1066697_rule" $?
+
+bash scripts/check-fips_enabled.sh >/dev/null 2>&1 &
+spinner $!
+output "SV-270744r1066721_rule" $?
+
+bash scripts/check-privilege-escalation.sh sudoers >/dev/null 2>&1 &
+spinner $!
+output "SV-270748r1066733_rule" $?
+
+bash scripts/check-aide.sh installed >/dev/null 2>&1 &
+spinner $!
+output "SV-270649r1067136_rule" $?
+
+bash scripts/check-aide.sh check >/dev/null 2>&1 &
+spinner $!
+output "SV-270650r1066439_rule" $?
+
+bash scripts/check-aide-cron.sh >/dev/null 2>&1 &
+spinner $!
+output "SV-270651r1068395_rule" $?
+
+bash scripts/check-aide.sh check >/dev/null 2>&1 &
+spinner $!
+output "SV-270652r1067138_rule" $?
+
+bash scripts/check-packages.sh rsyslog >/dev/null 2>&1 &
+spinner $!
+output "SV-270653r1067141_rule" $?
+
+bash scripts/check-packages.sh firewall >/dev/null 2>&1 &
+spinner $!
+output "SV-270654r1067143_rule" $?
+
+bash scripts/check-fw.sh status >/dev/null 2>&1 &
+spinner $!
+output "SV-270655r1067145_rule" $?
+
+bash scripts/check-packages.sh auditd >/dev/null 2>&1 &
+spinner $!
+output "SV-270656r1067148_rule" $?
+
+bash scripts/check-auditd.sh  active >/dev/null 2>&1 &
+spinner $!
+output "SV-270657r1066460_rule" $?
+
+bash scripts/check-packages.sh apparmor >/dev/null 2>&1 &
+spinner $!
+output "SV-270659r1066466_rule" $?
+
+bash scripts/check-apparmor.sh active >/dev/null 2>&1 &
+spinner $!
+output "SV-270660r1066469_rule" $?
+
+bash scripts/check-packages.sh pwquality >/dev/null 2>&1 &
+spinner $!
+output "SV-270661r1067175_rule" $?
+
+output "SV-270662r1067156_rule" 0 N/A
+output "SV-270663r1066478_rule" 0 N/A
+
+bash scripts/check-ssh.sh ciphers >/dev/null 2>&1 &
+spinner $!
+output "SV-270667r1067107_rule" $?
+
+bash scripts/check-ssh.sh macs >/dev/null 2>&1 &
+spinner $!
+output "SV-270668r1067110_rule" $?
+
+bash scripts/check-ssh.sh kex >/dev/null 2>&1 &
+spinner $!
+output "SV-270669r1067112_rule" $?
+
+bash scripts/check-ssh-client.sh ciphers >/dev/null 2>&1 &
+spinner $!
+output "SV-270670r1067115_rule" $?
+
+bash scripts/check-ssh-client.sh macs >/dev/null 2>&1 &
+spinner $!
+output "SV-270671r1067118_rule" $?
+
+bash scripts/check-packages.sh opensc >/dev/null 2>&1 &
+spinner $!
+output "SV-270672r1067161_rule" $?
+
+bash scripts/check-packages.sh pam-pkcs11 >/dev/null 2>&1 &
+spinner $!
+output "SV-270673r1067164_rule" $?
+
+bash scripts/check-packages.sh vlock >/dev/null 2>&1 &
+spinner $!
+output "SV-270674r1067167_rule" $?
+
+bash scripts/check-grub.sh audit >/dev/null 2>&1 &
+spinner $!
+output "SV-270676r1068360_rule" $?
+
+if [ ${GNOMEINSTALL} -ne 1 ];then
+	output "SV-270678r1066523_rule" 0 N/A
+	output "SV-270679r1066526_rule" 0 N/A
+fi
+
+bash scripts/check-session-tmout.sh >/dev/null 2>&1 &
+spinner $!
+output "SV-270680r1066529_rule" $?
+
+bash scripts/check-rsyslog.sh authlog >/dev/null 2>&1 &
+spinner $!
+output "SV-270681r1066532_rule" $?
+
+output "SV-270682r1066535_rule" $? N/A
+
+bash scripts/check-inactive.sh 0 >/dev/null 2>&1 &
+spinner $!
+output "SV-270683r1066538_rule" $?
+
+bash scripts/check-auditd.sh passwd >/dev/null 2>&1 &
+spinner $!
+output "SV-270684r1066541_rule" $?
+
+bash scripts/check-auditd.sh f-group  >/dev/null 2>&1 &
+spinner $!
+output "SV-270685r1066544_rule" $?
+
+bash scripts/check-auditd.sh f-shadow  >/dev/null 2>&1 &
+spinner $!
+output "SV-270686r1066547_rule" $?
+
+bash scripts/check-auditd.sh g-shadow  >/dev/null 2>&1 &
+spinner $!
+output "SV-270687r1066550_rule" $?
+
+bash scripts/check-auditd.sh f-opasswd  >/dev/null 2>&1 &
+spinner $!
+output "SV-270688r1066553_rule" $?
+
+bash scripts/check-auditd.sh execve-priv  >/dev/null 2>&1 &
+spinner $!
+output "SV-270689r1066556_rule" $?
+
+bash scripts/check-ssh.sh banner >/dev/null 2>&1 &
+spinner $!
+output "SV-270691r1066562_rule" $?
 
 if [ ${GNOMEINSTALL} -eq 1 ];then
 	bash scripts/check-gdm3-conf.sh banner-message-enable >/dev/null 2>&1 &
 	spinner $!
-	output "SV-86483r2_rule" $?
-
+	output "SV-270692r1066565_rule" $?
 
 	bash scripts/check-gdm3-conf.sh banner-message-text >/dev/null  2>&1 &
 	spinner $!
-	output "SV-86485r2_rule" $?
-
-
-	bash scripts/check-session-lock.sh >/dev/null 2>&1 &
-	spinner $!
-	output "SV-86515r2_rule" $?
-
-
-	bash scripts/check-screensaver-idle-delay.sh >/dev/null 2>&1 &
-	spinner $!
-	output "SV-86517r2_rule" $?
+	output "SV-270693r1066568_rule" $?
 fi
 
+output "SV-270694r1066571_rule" 0 N/A
 
-dpkg -s screen >/dev/null 2>&1 &
+bash scripts/valid-lib-permissions.sh >/dev/null 2>&1 &
 spinner $!
-output "SV-86521r1_rule" $?
+output "SV-270696r1066577_rule" $?
 
-
-bash scripts/check-password.sh /etc/pam.d/common-password pam_pwquality.so ucredit gt -1 >/dev/null 2>&1 &
+bash scripts/valid-lib-ownership.sh f user>/dev/null 2>&1 &
 spinner $!
-output "SV-86527r2_rule" $?
+output "SV-270697r1066580_rule" $?
 
-
-bash scripts/check-password.sh /etc/pam.d/common-password pam_pwquality.so lcredit gt -1 >/dev/null 2>&1 &
+bash scripts/valid-lib-ownership.sh d user>/dev/null 2>&1 &
 spinner $!
-output "SV-86529r2_rule" $?
+output "SV-270698r1066583_rule" $?
 
-
-bash scripts/check-password.sh /etc/pam.d/common-password pam_pwquality.so dcredit gt -1 >/dev/null 2>&1 &
+bash scripts/check-valid-group-owner.sh /lib /usr/lib /lib64 >/dev/null 2>&1 &
 spinner $!
-output "SV-86531r2_rule" $?
+output "SV-270699r1066586_rule" $?
 
-
-bash scripts/check-password.sh /etc/pam.d/common-password pam_pwquality.so ocredit gt -1 >/dev/null 2>&1 &
+bash scripts/valid-lib-ownership.sh d group >/dev/null 2>&1 &
 spinner $!
-output "SV-86533r1_rule" $?
+output "SV-270700r1066589_rule" $?
 
-
-bash scripts/check-password.sh /etc/pam.d/common-password pam_pwquality.so difok lt 8 >/dev/null 2>&1 &
+bash scripts/valid-bin-permissions.sh f >/dev/null 2>&1 &
 spinner $!
-output "SV-86535r1_rule" $?
+output "SV-270701r1066592_rule" $?
 
-
-bash scripts/check-password.sh /etc/pam.d/common-password pam_pwquality.so minclass lt 4 >/dev/null 2>&1 &
+bash scripts/valid-bin-ownership.sh f user>/dev/null 2>&1 &
 spinner $!
-output "SV-86537r1_rule" $?
+output "SV-270702r1066595_rule" $?
 
-
-bash scripts/check-password.sh /etc/pam.d/common-password pam_pwquality.so maxrepeat gt 2 >/dev/null 2>&1 &
+bash scripts/check-valid-group-owner.sh /bin /sbin /usr/bin /usr/sbin /usr/local/bin /usr/local/sbin >/dev/null 2>&1 &
 spinner $!
-output "SV-86539r1_rule" $?
+output "SV-270703r1066598_rule" $?
 
-
-bash scripts/check-password.sh /etc/pam.d/common-password pam_pwquality.so maxclassrepeat gt 4 >/dev/null 2>&1 &
+bash scripts/check-nullok.sh dictcheck>/dev/null 2>&1 &
 spinner $!
-output "SV-86541r1_rule" $?
+output "SV-270704r1066601_rule" $?
 
-
-sed -e '/^#/d' -e '/^[ \t][ \t]*#/d' -e 's/#.*$//' -e '/^$/d' /etc/pam.d/* | grep password | grep pam_unix.so | grep sha512 > /dev/null 2>&1 &
+bash scripts/check-password.sh /etc/pam.d/common-password pam_pwquality.so retry gt 3 >/dev/null 2>&1 &
 spinner $!
-output "SV-86543r1_rule" $?
-
-
-grep -i encrypt /etc/login.defs | grep -v '^#' | grep SHA512 >/dev/null 2>&1 &
-spinner $!
-output "SV-86545r1_rule" $?
-
-
-bash scripts/check-password-newuser-minday.sh 1 >/dev/null 2>&1 &
-spinner $!
-output "SV-86549r1_rule" $?
-
-
-bash scripts/check-password-min-day.sh 1 >/dev/null 2>&1 &
-spinner $!
-output "SV-86551r1_rule" $?
-
-
-bash scripts/check-password-max-day-4-newuser.sh 60 >/dev/null 2>&1 &
-spinner $!
-output "SV-86553r1_rule" $?
-
-
-bash scripts/check-password-max-day-4-existing.sh 60 >/dev/null 2>&1 &
-spinner $!
-output "SV-86555r1_rule" $?
-
-
-bash scripts/check-password.sh /etc/pam.d/common-password pam_unix.so remember ge 5 >/dev/null 2>&1 &
-spinner $!
-output "SV-86557r1_rule" $?
-
-
-bash scripts/check-password.sh /etc/pam.d/common-password pam_pwquality.so minlen lt 15 >/dev/null 2>&1 &
-spinner $!
-output "SV-86559r1_rule" $?
-
-
-bash scripts/check-nullok.sh >/dev/null 2>&1 &
-spinner $!
-output "SV-86561r1_rule" $?
-
-
-bash scripts/check-ssh.sh emptypassword >/dev/null 2>&1 &
-spinner $!
-output "SV-86563r2_rule" $?
-
-
-bash scripts/check-inactive.sh 0 >/dev/null 2>&1 &
-spinner $!
-output "SV-86565r1_rule" $?
-
-
-bash scripts/check-deny-and-locktime.sh >/dev/null 2>&1 &
-spinner $!
-output "SV-86567r2_rule" $?
-
-
-bash scripts/check-deny-and-locktime-4-root.sh >/dev/null 2>&1 &
-spinner $!
-output "SV-86569r1_rule" $?
-
+output "SV-270705r1066604_rule" $?
 
 bash scripts/check-privilege-escalation.sh sudo >/dev/null 2>&1 &
 spinner $!
-output "SV-86571r1_rule" $?
+output "SV-270707r1066610_rule" $?
 
-
-bash scripts/check-privilege-escalation.sh authentication >/dev/null 2>&1 &
+bash scripts/check-ssh.sh X11UseLocalhost  >/dev/null 2>&1 &
 spinner $!
-output "SV-86573r2_rule" $?
+output "SV-270709r1066616_rule" $?
 
-
-bash scripts/check-password-fail-delay.sh 4 >/dev/null 2>&1 &
+bash scripts/check-auditd.sh journal  >/dev/null 2>&1 &
 spinner $!
-output "SV-86575r1_rule" $?
-
-if [ ${GNOMEINSTALL} -eq 1 ];then
-	bash scripts/check-gdm3-conf.sh AutomaticLoginEnable >/dev/null 2>&1 &
-	spinner $!
-	output "SV-86577r1_rule" $?
-
-
-	bash scripts/check-gdm3-conf.sh TimedLoginEnable >/dev/null 2>&1 &
-	spinner $!
-	output "SV-86579r2_rule" $?
-fi
-
-bash scripts/check-ssh.sh emptypasswordenvironment >/dev/null 2>&1 &
-spinner $!
-output "SV-86581r2_rule" $?
-
-
-bash scripts/check-ssh.sh hostauth >/dev/null 2>&1 &
-spinner $!
-output "SV-86583r2_rule" $?
-
-
-bash scripts/check-grub.sh password_pbkdf2 >/dev/null 2>&1 &
-spinner $!
-output "SV-86585r1_rule" $?
-
-
-bash scripts/check-grub.sh password_pbkdf2_efi >/dev/null 2>&1 &
-spinner $!
-output "SV-86587r1_rule" $?
-
-
-bash scripts/check-packages.sh rsh-server >/dev/null 2>&1 &
-spinner $!
-output "SV-86591r1_rule" $?
-
-
-bash scripts/check-packages.sh ypserv >/dev/null 2>&1 &
-spinner $!
-output "SV-86593r1_rule" $?
-
-
-bash scripts/check-aide-cron.sh >/dev/null 2>&1 &
-spinner $!
-output "SV-86597r1_rule" $?
-
-
-bash scripts/check-package-install-verification.sh  repository  >/dev/null 2>&1 &
-spinner $!
-output "SV-86601r1_rule" $?
-
-
-bash scripts/check-package-install-verification.sh local  >/dev/null 2>&1 &
-spinner $!
-output "SV-86603r1_rule" $?
-
-
-bash scripts/check-apt-key.sh  >/dev/null 2>&1 &
-spinner $!
-output "SV-86605r1_rule" $?
-
-
-bash scripts/check-usb-storage-disable.sh >/dev/null 2>&1 &
-spinner $!
-output "SV-86607r1_rule" $?
-
-
-bash scripts/check-autofs.sh >/dev/null 2>&1 &
-spinner $!
-output "SV-86609r1_rule" $?
-
-
-grep -v "^#" /boot/grub/grub.cfg | grep -i "apparmor=1" >/dev/null 2>&1 &
-spinner $!
-output "SV-86613r2_rule" $?
-
-
-bash scripts/check-ctrl-alt-del.sh >/dev/null 2>&1 &
-spinner $!
-output "SV-86617r1_rule" $?
-
+output "SV-270715r1066634_rule" $?
 
 sed -e '/^#/d' -e '/^[ \t][ \t]*#/d' -e 's/#.*$//' -e '/^$/d' /etc/login.defs  | grep -i "umask.*077"  >/dev/null 2>&1 &
 spinner $!
-output "SV-86619r1_rule" $?
+output "SV-270716r1066637_rule" $?
 
-
-grep "Debian.*GNU/Linux" /etc/issue >/dev/null 2>&1 &
-spinner $!
-output "SV-86621r2_rule" $?
-
-
-bash scripts/check-package-up2date.sh >/dev/null 2>&1 &
-spinner $!
-output "SV-86623r3_rule" $?
-
-
-bash scripts/check-gids.sh >/dev/null 2>&1 &
-spinner $!
-output "SV-86627r1_rule" $?
-
-
-bash scripts/check-root-uid.sh >/dev/null 2>&1 &
-spinner $!
-output "SV-86629r1_rule" $?
-
-
-bash scripts/check-valid-owner.sh >/dev/null 2>&1 &
-spinner $!
-output "SV-86631r1_rule" $?
-
-
-bash scripts/check-valid-group-owner.sh >/dev/null 2>&1 &
-spinner $!
-output "SV-86633r1_rule" $?
-
-
-bash scripts/check-homedir-assigned.sh >/dev/null 2>&1 &
-spinner $!
-output "SV-86635r1_rule" $?
-
-
-bash scripts/check-create-home.sh >/dev/null 2>&1 &
-spinner $!
-output "SV-86637r1_rule" $?
-
-
-bash scripts/check-homedir-exist.sh >/dev/null 2>&1 &
-spinner $!
-output "SV-86639r1_rule" $?
-
-
-bash scripts/check-homedir-permissive.sh >/dev/null 2>&1 &
-spinner $!
-output "SV-86641r1_rule" $?
-
-
-bash scripts/check-homedir-owner.sh >/dev/null 2>&1 &
-spinner $!
-output "SV-86643r2_rule" $?
-
-
-bash scripts/check-homedir-gowner.sh >/dev/null 2>&1 &
-spinner $!
-output "SV-86645r2_rule" $?
-
-
-bash scripts/check-homedir-files-owner.sh >/dev/null 2>&1 &
-spinner $!
-output "SV-86647r1_rule" $?
-
-
-bash scripts/check-homedir-files-gowner.sh >/dev/null 2>&1 &
-spinner $!
-output "SV-86649r1_rule" $?
-
-
-bash scripts/check-homedir-files-permissive.sh >/dev/null 2>&1 &
-spinner $!
-output "SV-86651r1_rule" $?
-
-
-bash scripts/check-homedir-initfiles-owner.sh >/dev/null 2>&1 &
-spinner $!
-output "SV-86653r1_rule" $?
-
-
-bash scripts/check-homedir-initfiles-gowner.sh >/dev/null 2>&1 &
-spinner $!
-output "SV-86655r2_rule" $?
-
-
-bash scripts/check-homedir-initfiles-permissive.sh >/dev/null 2>&1 &
-spinner $!
-output "SV-86657r1_rule" $?
-
-
-bash scripts/check-homedir-to-exec-path.sh >/dev/null 2>&1 &
-spinner $!
-output "SV-86659r2_rule" $?
-
-
-bash scripts/check-homedir-initfiles-world-writable.sh >/dev/null 2>&1 &
-spinner $!
-output "SV-86661r1_rule" $?
-
-
-bash scripts/check-mount-option.sh home nosuid >/dev/null 2>&1 &
-spinner $!
-output "SV-86665r2_rule" $?
-
-
-bash scripts/check-mount-option.sh media nosuid >/dev/null 2>&1 &
-spinner $!
-output "SV-86667r1_rule" $?
-
-
-bash scripts/check-mount-option.sh nfs nosuid >/dev/null 2>&1 &
-spinner $!
-output "SV-86669r1_rule" $?
-
-
-bash scripts/check-world-writable-dir-gowner.sh >/dev/null 2>&1 &
-spinner $!
-output "SV-86671r1_rule" $?
-
-
-bash scripts/check-homedir-initfiles-umask.sh >/dev/null 2>&1 &
-spinner $!
-output "SV-86673r1_rule" $?
-
-
-bash scripts/check-cron.sh cronlog >/dev/null 2>&1 &
-spinner $!
-output "SV-86675r1_rule" $?
-
-
-if [ -e /etc/cron.allow ];then
-	bash scripts/check-cron.sh allowfileown >/dev/null 2>&1 &
-	spinner $!
-	output "SV-86677r1_rule" $?
-
-
-	bash scripts/check-cron.sh allowfilegown >/dev/null 2>&1 &
-	spinner $!
-	output "SV-86679r1_rule" $?
-fi
-
-
-bash scripts/check-limits.sh core-dumps >/dev/null 2>&1 &
-spinner $!
-output "SV-86681r1_rule" $?
-
-
-mount | grep "on./home.type" >/dev/null 2>&1 &
-spinner $!
-output "SV-86683r1_rule" $?
-
-
-mount | grep "on./var.type" >/dev/null 2>&1 &
-spinner $!
-output "SV-86685r1_rule" $?
-
-
-mount | grep "on./var/log/audit.type" >/dev/null 2>&1 &
-spinner $!
-output "SV-86687r3_rule" $?
-
-
-mount | grep "on./tmp.type" >/dev/null 2>&1 &
-spinner $!
-output "SV-86689r1_rule" $?
-
-
-bash scripts/check-fips_enabled.sh >/dev/null 2>&1 &
-spinner $!
-output "SV-86691r2_rule" $?
-
-
-bash scripts/check-aide.sh acl >/dev/null 2>&1 &
-spinner $!
-output "SV-86693r2_rule" $?
-
-
-bash scripts/check-aide.sh sha512 >/dev/null 2>&1 &
-spinner $!
-output "SV-86697r2_rule" $?
-
-
-bash scripts/check-grub.sh  removable >/dev/null 2>&1 &
-spinner $!
-output "SV-86699r1_rule" $?
-
-
-bash scripts/check-packages.sh telnetd >/dev/null 2>&1 &
-spinner $!
-output "SV-86701r1_rule" $?
-
-
-bash scripts/check-auditd.sh  active >/dev/null 2>&1 &
-spinner $!
-output "SV-86703r1_rule" $?
-
-
-bash scripts/check-auditd.sh enableflag >/dev/null 2>&1 &
-spinner $!
-output "SV-86705r1_rule" $?
-
-
-bash scripts/check-auditd.sh remote_server >/dev/null 2>&1 &
-spinner $!
-output "SV-86707r1_rule" $?
-
-
-bash scripts/check-auditd.sh enable_krb5 >/dev/null 2>&1 &
-spinner $!
-output "SV-86709r1_rule" $?
-
-
-bash scripts/check-auditd.sh disk_full_error_action >/dev/null 2>&1 &
-spinner $!
-output "SV-86711r2_rule" $?
-
-
-bash scripts/check-auditd.sh space_left >/dev/null 2>&1 &
-spinner $!
-output "SV-86713r1_rule" $?
-
-
-bash scripts/check-auditd.sh space_left_action >/dev/null 2>&1 &
-spinner $!
-output "SV-86715r1_rule" $?
-
-
-bash scripts/check-auditd.sh action_mail_acct >/dev/null 2>&1 &
-spinner $!
-output "SV-86717r2_rule" $?
-
-
-bash scripts/check-auditd-syscall.sh chown >/dev/null 2>&1 &
-spinner $!
-output "SV-86721r2_rule" $?
-
-
-bash scripts/check-auditd-syscall.sh fchown >/dev/null 2>&1 &
-spinner $!
-output "SV-86723r2_rule" $?
-
-
-bash scripts/check-auditd-syscall.sh lchown >/dev/null 2>&1 &
-spinner $!
-output "SV-86725r2_rule" $?
-
-
-bash scripts/check-auditd-syscall.sh fchownat >/dev/null 2>&1 &
-spinner $!
-output "SV-86727r2_rule" $?
-
-
-bash scripts/check-auditd-syscall.sh chmod >/dev/null 2>&1 &
-spinner $!
-output "SV-86729r2_rule" $?
-
-
-bash scripts/check-auditd-syscall.sh fchmod >/dev/null 2>&1 &
-spinner $!
-output "SV-86731r2_rule" $?
-
-
-bash scripts/check-auditd-syscall.sh fchmodat >/dev/null 2>&1 &
-spinner $!
-output "SV-86733r2_rule" $?
-
-
-bash scripts/check-auditd-syscall.sh setxattr >/dev/null 2>&1 &
-spinner $!
-output "SV-86735r2_rule" $?
-
-
-bash scripts/check-auditd-syscall.sh fsetxattr >/dev/null 2>&1 &
-spinner $!
-output "SV-86737r2_rule" $?
-
-
-bash scripts/check-auditd-syscall.sh lsetxattr >/dev/null 2>&1 &
-spinner $!
-output "SV-86739r2_rule" $?
-
-
-bash scripts/check-auditd-syscall.sh removexattr >/dev/null 2>&1 &
-spinner $!
-output "SV-86741r2_rule" $?
-
-
-bash scripts/check-auditd-syscall.sh fremovexattr >/dev/null 2>&1 &
-spinner $!
-output "SV-86743r2_rule" $?
-
-
-bash scripts/check-auditd-syscall.sh lremovexattr >/dev/null 2>&1 &
-spinner $!
-output "SV-86745r2_rule" $?
-
-
-bash scripts/check-auditd-syscall.sh creat >/dev/null 2>&1 &
-spinner $!
-output "SV-86747r2_rule" $?
-
-
-bash scripts/check-auditd-syscall.sh open >/dev/null 2>&1 &
-spinner $!
-output "SV-86749r2_rule" $?
-
-
-bash scripts/check-auditd-syscall.sh openat >/dev/null 2>&1 &
-spinner $!
-output "SV-86751r2_rule" $?
-
-
-bash scripts/check-auditd-syscall.sh open_by_handle_at >/dev/null 2>&1 &
-spinner $!
-output "SV-86753r2_rule" $?
-
-
-bash scripts/check-auditd-syscall.sh truncate >/dev/null 2>&1 &
-spinner $!
-output "SV-86755r2_rule" $?
-
-
-bash scripts/check-auditd-syscall.sh ftruncate >/dev/null 2>&1 &
-spinner $!
-output "SV-86757r2_rule" $?
-
-
-bash scripts/check-auditd.sh tallylog >/dev/null 2>&1 &
-spinner $!
-output "SV-86767r2_rule" $?
-
-
-bash scripts/check-auditd.sh faillock >/dev/null 2>&1 &
-spinner $!
-output "SV-86769r2_rule" $?
-
-
-bash scripts/check-auditd.sh lastlog >/dev/null 2>&1 &
-spinner $!
-output "SV-86771r2_rule" $?
-
-
-bash scripts/check-auditd.sh passwd >/dev/null 2>&1 &
-spinner $!
-output "SV-86773r3_rule" $?
-
-
-bash scripts/check-auditd.sh unix_chkpwd >/dev/null 2>&1 &
-spinner $!
-output "SV-86775r3_rule" $?
-
-
-bash scripts/check-auditd.sh gpasswd >/dev/null 2>&1 &
+bash scripts/check-usb-storage-disable.sh >/dev/null 2>&1 &
 spinner $!
-output "SV-86777r3_rule" $?
+output "SV-270718r1067128_rule" $?
 
-
-bash scripts/check-auditd.sh chage >/dev/null 2>&1 &
-spinner $!
-output "SV-86779r3_rule" $?
-
-
-if [ ${GNOMEINSTALL} -eq 1 ];then
-	bash scripts/check-auditd.sh gnome-pty-helper >/dev/null 2>&1 &
-	spinner $!
-	output "SV-86781r3_rule" $?
-fi
-
-
-bash scripts/check-auditd.sh su >/dev/null 2>&1 &
-spinner $!
-output "SV-86783r3_rule" $?
-
-
-bash scripts/check-auditd.sh sudo >/dev/null 2>&1 &
-spinner $!
-output "SV-86785r3_rule" $?
-
-
-bash scripts/check-auditd.sh f-sudoers >/dev/null 2>&1 &
-spinner $!
-output "SV-86787r3_rule" $?
-
-
-bash scripts/check-auditd.sh newgrp >/dev/null 2>&1 &
-spinner $!
-output "SV-86789r3_rule" $?
-
-
-bash scripts/check-auditd.sh chsh >/dev/null 2>&1 &
-spinner $!
-output "SV-86791r3_rule" $?
-
-
-bash scripts/check-auditd.sh sudoedit >/dev/null 2>&1 &
-spinner $!
-output "SV-86793r3_rule" $?
-
-
-bash scripts/check-auditd.sh mount >/dev/null 2>&1 &
-spinner $!
-output "SV-86795r3_rule" $?
-
-
-bash scripts/check-auditd.sh umount >/dev/null 2>&1 &
-spinner $!
-output "SV-86797r3_rule" $?
-
-if [ -e /usr/sbin/postdrop ];then
-	bash scripts/check-auditd.sh postdrop >/dev/null 2>&1 &
-	spinner $!
-	output "SV-86799r3_rule" $?
-fi
-
-bash scripts/check-auditd.sh postqueue >/dev/null 2>&1 &
-spinner $!
-output "SV-86801r2_rule" $?
-
-
-bash scripts/check-auditd.sh ssh-keysign >/dev/null 2>&1 &
-spinner $!
-output "SV-86803r2_rule" $?
-
-
-bash scripts/check-auditd.sh crontab >/dev/null 2>&1 &
-spinner $!
-output "SV-86807r2_rule" $?
-
-
-bash scripts/check-auditd.sh pam_timestamp_check >/dev/null 2>&1 &
-spinner $!
-output "SV-86809r2_rule" $?
-
-
-bash scripts/check-auditd-syscall.sh init_module >/dev/null 2>&1 &
-spinner $!
-output "SV-86811r2_rule" $?
-
-
-bash scripts/check-auditd-syscall.sh delete_module >/dev/null 2>&1 &
-spinner $!
-output "SV-86813r2_rule" $?
-
-
-bash scripts/check-auditd.sh insmod >/dev/null 2>&1 &
+bash scripts/check-iptables.sh iptables-ins>/dev/null 2>&1 &
 spinner $!
-output "SV-86815r2_rule" $?
-
+output "SV-270719r1067172_rule" $?
 
-bash scripts/check-auditd.sh rmmod >/dev/null 2>&1 &
+bash scripts/check-dup-user.sh >/dev/null 2>&1 &
 spinner $!
-output "SV-86817r2_rule" $?
+output "SV-270720r1066649_rule" $?
 
+output "SV-270721r1066652_rule" 1
+output "SV-270722r1067130_rule" 1
+output "SV-270723r1066658_rule" 1
 
-bash scripts/check-auditd.sh modprobe >/dev/null 2>&1 &
+bash scripts/check-root.sh pwlock>/dev/null 2>&1 &
 spinner $!
-output "SV-86819r2_rule" $?
+output "SV-270724r1066661_rule" $?
 
-
-bash scripts/check-auditd.sh f-passwd >/dev/null 2>&1 &
+bash scripts/check-password-flag.sh /etc/pam.d/common-password pam_unix sha512  >/dev/null 2>&1 &
 spinner $!
-output "SV-86821r3_rule" $?
+output "SV-270725r1066664_rule" $?
 
-
-bash scripts/check-auditd-syscall.sh rename >/dev/null 2>&1 &
+bash scripts/check-password.sh /etc/pam.d/common-password pam_pwquality.so ucredit gt -1 >/dev/null 2>&1 &
 spinner $!
-output "SV-86823r2_rule" $?
-
+output "SV-270726r1066667_rule" $?
 
-bash scripts/check-auditd-syscall.sh renameat >/dev/null 2>&1 &
+bash scripts/check-password.sh /etc/pam.d/common-password pam_pwquality.so lcredit gt -1 >/dev/null 2>&1 &
 spinner $!
-output "SV-86825r2_rule" $?
+output "SV-270727r1066670_rule" $?
 
-
-bash scripts/check-auditd-syscall.sh rmdir >/dev/null 2>&1 &
+bash scripts/check-password.sh /etc/pam.d/common-password pam_pwquality.so dcredit gt -1 >/dev/null 2>&1 &
 spinner $!
-output "SV-86827r2_rule" $?
-
+output "SV-270728r1066673_rule" $?
 
-bash scripts/check-auditd-syscall.sh unlink >/dev/null 2>&1 &
+bash scripts/check-password.sh /etc/pam.d/common-password pam_pwquality.so difok lt 8 >/dev/null 2>&1 &
 spinner $!
-output "SV-86829r2_rule" $?
+output "SV-270729r1066676_rule" $?
 
-
-bash scripts/check-auditd-syscall.sh unlinkat >/dev/null 2>&1 &
+bash scripts/check-password-newuser-minday.sh 1 >/dev/null 2>&1 &
 spinner $!
-output "SV-86831r2_rule" $?
-
+output "SV-270730r1066679_rule" $?
 
-bash scripts/check-rsyslog.sh aggregation-server >/dev/null 2>&1 &
+bash scripts/check-password-max-day-4-newuser.sh 60 >/dev/null 2>&1 &
 spinner $!
-output "SV-86833r1_rule" $?
+output "SV-270731r1066682_rule" $?
 
-
-bash scripts/check-rsyslog.sh imtcp >/dev/null 2>&1 &
+bash scripts/check-password.sh /etc/pam.d/common-password pam_pwquality.so minlen lt 15 >/dev/null 2>&1 &
 spinner $!
-output "SV-86835r1_rule" $?
-
+output "SV-270732r1066685_rule" $?
 
-bash scripts/check-virus-program.sh virus-scan-program >/dev/null 2>&1 &
+bash scripts/check-password.sh /etc/pam.d/common-password pam_pwquality.so ocredit gt -1 >/dev/null 2>&1 &
 spinner $!
-output "SV-86837r1_rule" $?
+output "SV-270733r1066688_rule" $?
 
-
-bash scripts/check-virus-program.sh virus-update >/dev/null 2>&1 &
+bash scripts/check-sssd.sh pam >/dev/null 2>&1 &
 spinner $!
-output "SV-86839r1_rule" $?
+output "SV-270735r1066694_rule" $?
 
-
-bash scripts/check-limits.sh maxlogins >/dev/null 2>&1 &
+bash scripts/check-sssd.sh ca-trust >/dev/null 2>&1 &
 spinner $!
-output "SV-86841r1_rule" $?
-
+output "SV-270737r1067178_rule" $?
 
-bash scripts/check-ssh.sh ciphers >/dev/null 2>&1 &
+bash scripts/check-sssd.sh ca-policy >/dev/null 2>&1 &
 spinner $!
-output "SV-86845r2_rule" $?
+output "SV-270738r1066703_rule" $?
 
-
-bash scripts/check-session-tmout.sh >/dev/null 2>&1 &
+bash scripts/check-password-encrypt.sh >/dev/null 2>&1 &
 spinner $!
-output "SV-86847r2_rule" $?
-
+output "SV-270739r1067124_rule" $?
 
-bash scripts/check-ssh.sh banner >/dev/null 2>&1 &
+bash scripts/check-auditd.sh maintenance  >/dev/null 2>&1 &
 spinner $!
-output "SV-86849r2_rule" $?
-
-
-if [ -e /etc/pam_ldap.conf ];then
-	scripts/check-ldap.sh tls_cacertdir >/dev/null 2>&1 &
-	spinner $!
-	output "SV-86853r2_rule" $?
+output "SV-270740r1066709_rule" $?
 
-
-	scripts/check-ldap.sh tls_cacertfile >/dev/null 2>&1 &
-	spinner $!
-	output "SV-86855r2_rule" $?
-fi
-
-
-bash scripts/check-ssh.sh installed >/dev/null 2>&1 &
+bash scripts/check-ssh.sh pam  >/dev/null 2>&1 &
 spinner $!
-output "SV-86857r1_rule" $?
+output "SV-270741r1066712_rule" $?
 
-
-bash scripts/check-ssh.sh sshd_status >/dev/null 2>&1 &
+bash scripts/check-ssh.sh ClientAliveCountMax  >/dev/null 2>&1 &
 spinner $!
-output "SV-86859r2_rule" $?
-
+output "SV-270742r1066715_rule" $?
 
 bash scripts/check-ssh.sh ClientAliveInterval >/dev/null 2>&1 &
 spinner $!
-output "SV-86861r2_rule" $?
+output "SV-270743r1066718_rule" $?
 
+output "SV-270745r1066724_rule" 1
 
-bash scripts/check-ssh.sh RhostsRSAAuthentication >/dev/null 2>&1 &
+bash scripts/check-kdump.sh >/dev/null 2>&1 &
 spinner $!
-output "SV-86863r2_rule" $?
+output "SV-270746r1066727_rule" $?
 
+output "SV-270747r1066730_rule" 1
 
-bash scripts/check-ssh.sh ClientAliveCountMax >/dev/null 2>&1 &
+bash scripts/check-wwd-non-sticky.sh >/dev/null 2>&1 &
 spinner $!
-output "SV-86865r2_rule" $?
+output "SV-270750r1066739_rule" $?
 
-
-bash scripts/check-ssh.sh IgnoreRhosts >/dev/null 2>&1 &
+bash scripts/check-sysctl.sh net.ipv4.tcp_syncookies eq 1 >/dev/null 2>&1 &
 spinner $!
-output "SV-86867r2_rule" $?
+output "SV-270753r1066748_rule" $?
 
+output "SV-270754r1066751_rule" 0 N/A
+output "SV-270755r1066754_rule" 0 N/A
 
-bash scripts/check-ssh.sh PrintLastLog >/dev/null 2>&1 &
+bash scripts/check-log-permissions.sh >/dev/null 2>&1 &
 spinner $!
-output "SV-86869r2_rule" $?
+output "SV-270756r1066757_rule" $?
 
+output "SV-270757r1066760_rule" 1
+output "SV-270758r1066763_rule" 1
 
-bash scripts/check-ssh.sh permitroot >/dev/null 2>&1 &
+bash scripts/check-journalctl-owner.sh U >/dev/null 2>&1 &
 spinner $!
-output "SV-86871r2_rule" $?
+output "SV-270759r1068367_rule" $?
 
-
-bash scripts/check-ssh.sh IgnoreUserKnownHosts >/dev/null 2>&1 &
+bash scripts/check-journalctl-owner.sh G >/dev/null 2>&1 &
 spinner $!
-output "SV-86873r2_rule" $?
+output "SV-270760r1066769_rule" $?
 
-
-bash scripts/check-ssh.sh Protocol >/dev/null 2>&1 &
+bash scripts/check-journal-gowner.sh f G systemd-journal>/dev/null 2>&1 &
 spinner $!
-output "SV-86875r2_rule" $?
+output "SV-270761r1067180_rule" $?
 
-
-bash scripts/check-ssh.sh macs >/dev/null 2>&1 &
+bash scripts/check-journal-gowner.sh d G systemd-journal>/dev/null 2>&1 &
 spinner $!
-output "SV-86877r2_rule" $?
+output "SV-270762r1066775_rule" $?
 
-
-bash scripts/check-ssh.sh pubkeypermissive >/dev/null 2>&1 &
+bash scripts/check-journal-gowner.sh d U root >/dev/null 2>&1 &
 spinner $!
-output "SV-86879r1_rule" $?
+output "SV-270763r1066778_rule" $?
 
-
-bash scripts/check-ssh.sh hostkeypermissive >/dev/null 2>&1 &
+bash scripts/check-journal-gowner.sh f U root >/dev/null 2>&1 &
 spinner $!
-output "SV-86881r1_rule" $?
+output "SV-270764r1066781_rule" $?
 
+output "SV-270765r1066784_rule" 0 N/A
 
-bash scripts/check-ssh.sh GSSAPIAuthentication >/dev/null 2>&1 &
+bash scripts/check-syslog-ownership.sh owner >/dev/null 2>&1 &
 spinner $!
-output "SV-86883r2_rule" $?
+output "SV-270766r1066787_rule" $?
 
-
-bash scripts/check-ssh.sh KerberosAuthentication >/dev/null 2>&1 &
+bash scripts/check-syslog-ownership.sh dir-permission >/dev/null 2>&1 &
 spinner $!
-output "SV-86885r2_rule" $?
+output "SV-270767r1066790_rule" ${res}
 
-
-bash scripts/check-ssh.sh StrictModes >/dev/null 2>&1 &
+bash scripts/check-syslog-ownership.sh gowner >/dev/null 2>&1 &
 spinner $!
-output "SV-86887r2_rule" $?
+output "SV-270768r1066793_rule" ${res}
 
+output "SV-270769r1066796_rule" 0 N/A
 
-bash scripts/check-ssh.sh UsePrivilegeSeparation >/dev/null 2>&1 &
+bash scripts/check-syslog-ownership.sh permission >/dev/null 2>&1 &
 spinner $!
-output "SV-86889r2_rule" $?
+output "SV-270770r1066799_rule" ${res}
 
-
-bash scripts/check-ssh.sh Compression >/dev/null 2>&1 &
+bash scripts/check-cpu-flags.sh nx >/dev/null 2>&1 &
 spinner $!
-output "SV-86891r2_rule" $?
+output "SV-270771r1066802_rule" ${res}
 
-
-bash scripts/check-services.sh ntp >/dev/null 2>&1 &
+bash scripts/check-sysctl.sh kernel.randomize_va_space eq 2 >/dev/null 2>&1 &
 spinner $!
-output "SV-86893r2_rule" $?
+output "SV-270772r1066805_rule" $?
 
+output "SV-270773r1066808_rule" 1
 
-bash scripts/check-iptables.sh iptables-dos >/dev/null 2>&1 &
+grep "Debian.*GNU/Linux.*11" /etc/issue.net >/dev/null 2>&1 &
 spinner $!
-output "SV-86895r1_rule" $?
+output "SV-270774r1066811_rule" $?
 
-
-bash scripts/check-iptables.sh iptables-ins >/dev/null 2>&1 &
+bash scripts/check-auditd.sh  permissions >/dev/null 2>&1 &
 spinner $!
-output "SV-86897r1_rule" $?
+output "SV-270775r1068369_rule" $?
 
+bash scripts/check-auditd.sh ownership user >/dev/null 2>&1 &
+spinner $!
+output "SV-270776r1066817_rule" $?
+
+bash scripts/check-auditd.sh ownership group >/dev/null 2>&1 &
+spinner $!
+output "SV-270777r1066820_rule" $?
+
+bash scripts/check-auditd.sh su >/dev/null 2>&1 &
+spinner $!
+output "SV-270778r1066823_rule" $?
+
+bash scripts/check-auditd.sh chfn >/dev/null 2>&1 &
+spinner $!
+output "SV-270779r1066826_rule" $?
+
+bash scripts/check-auditd.sh mount >/dev/null 2>&1 &
+spinner $!
+output "SV-270780r1066829_rule" $?
+
+bash scripts/check-auditd.sh umount >/dev/null 2>&1 &
+spinner $!
+output "SV-270781r1066832_rule" $?
+
+bash scripts/check-auditd.sh ssh-agent >/dev/null 2>&1 &
+spinner $!
+output "SV-270782r1066835_rule" $?
+
+bash scripts/check-auditd.sh ssh-keysign >/dev/null 2>&1 &
+spinner $!
+output "SV-270783r1066838_rule" $?
+
+bash scripts/check-auditd.sh xattr >/dev/null 2>&1 &
+spinner $!
+output "SV-270784r1068371_rule" $?
+
+bash scripts/check-auditd.sh chown >/dev/null 2>&1 &
+spinner $!
+output "SV-270785r1068373_rule" $?
+
+bash scripts/check-auditd.sh chmod >/dev/null 2>&1 &
+spinner $!
+output "SV-270786r1068375_rule" $?
+
+bash scripts/check-auditd.sh creat >/dev/null 2>&1 &
+spinner $!
+output "SV-270787r1068378_rule" $?
+
+bash scripts/check-auditd.sh sudo >/dev/null 2>&1 &
+spinner $!
+output "SV-270788r1066853_rule" $?
+
+bash scripts/check-auditd.sh sudoedit >/dev/null 2>&1 &
+spinner $!
+output "SV-270789r1066856_rule" $?
+
+bash scripts/check-auditd.sh chsh >/dev/null 2>&1 &
+spinner $!
+output "SV-270790r1068380_rule" $?
+
+bash scripts/check-auditd.sh newgrp >/dev/null 2>&1 &
+spinner $!
+output "SV-270791r1066862_rule" $?
+
+bash scripts/check-auditd.sh chcon >/dev/null 2>&1 &
+spinner $!
+output "SV-270792r1066865_rule" $?
+
+bash scripts/check-auditd.sh apparmor_parser >/dev/null 2>&1 &
+spinner $!
+output "SV-270793r1066868_rule" $?
+
+bash scripts/check-auditd.sh setfacl >/dev/null 2>&1 &
+spinner $!
+output "SV-270794r1066871_rule" $?
+
+bash scripts/check-auditd.sh chacl >/dev/null 2>&1 &
+spinner $!
+output "SV-270795r1066874_rule" $?
+
+bash scripts/check-auditd.sh authlog >/dev/null 2>&1 &
+spinner $!
+output "SV-270796r1066877_rule" $?
+
+bash scripts/check-auditd.sh lastlog >/dev/null 2>&1 &
+spinner $!
+output "SV-270797r1066880_rule" $?
+
+bash scripts/check-auditd.sh passwd >/dev/null 2>&1 &
+spinner $!
+output "SV-270798r1068382_rule" $?
+
+bash scripts/check-auditd.sh unixupdate >/dev/null 2>&1 &
+spinner $!
+output "SV-270799r1066886_rule" $?
+
+bash scripts/check-auditd.sh gpasswd >/dev/null 2>&1 &
+spinner $!
+output "SV-270800r1066889_rule" $?
+
+bash scripts/check-auditd.sh chage >/dev/null 2>&1 &
+spinner $!
+output "SV-270801r1066892_rule" $?
+
+bash scripts/check-auditd.sh usermod >/dev/null 2>&1 &
+spinner $!
+output "SV-270802r1066895_rule" $?
+
+bash scripts/check-auditd.sh crontab >/dev/null 2>&1 &
+spinner $!
+output "SV-270803r1066898_rule" $?
+
+bash scripts/check-auditd.sh pam_timestamp >/dev/null 2>&1 &
+spinner $!
+output "SV-270804r1066901_rule" $?
+
+bash scripts/check-auditd.sh init_module >/dev/null 2>&1 &
+spinner $!
+output "SV-270805r1068384_rule" $?
+
+bash scripts/check-auditd.sh delete_module >/dev/null 2>&1 &
+spinner $!
+output "SV-270806r1068386_rule" $?
+
+bash scripts/check-auditd.sh f-sudoers >/dev/null 2>&1 &
+spinner $!
+output "SV-270807r1066910_rule" $?
+
+bash scripts/check-auditd.sh f-sudoers >/dev/null 2>&1 &
+spinner $!
+output "SV-270808r1067100_rule" $?
+
+bash scripts/check-auditd.sh unlink >/dev/null 2>&1 &
+spinner $!
+output "SV-270809r1068388_rule" $?
+
+bash scripts/check-auditd.sh wtmp >/dev/null 2>&1 &
+spinner $!
+output "SV-270810r1066919_rule" $?
+
+bash scripts/check-auditd.sh utmp >/dev/null 2>&1 &
+spinner $!
+output "SV-270811r1066922_rule" $?
+
+bash scripts/check-auditd.sh btmp >/dev/null 2>&1 &
+spinner $!
+output "SV-270812r1066925_rule" $?
+
+bash scripts/check-auditd.sh modprobe >/dev/null 2>&1 &
+spinner $!
+output "SV-270813r1066928_rule" $?
+
+bash scripts/check-auditd.sh kmod >/dev/null 2>&1 &
+spinner $!
+output "SV-270814r1066931_rule" $?
+
+bash scripts/check-auditd.sh fdisk >/dev/null 2>&1 &
+spinner $!
+output "SV-270815r1066934_rule" $?
+
+bash scripts/check-auditd.sh bin-permissions >/dev/null 2>&1 &
+spinner $!
+output "SV-270821r1068391_rule" $?
+
+bash scripts/check-auditd.sh bin-ownership user >/dev/null 2>&1 &
+spinner $!
+output "SV-270822r1068392_rule" $?
+
+bash scripts/check-auditd.sh bin-ownership group >/dev/null 2>&1 &
+spinner $!
+output "SV-270823r1068393_rule" $?
+
+bash scripts/valid-bin-permissions.sh d >/dev/null 2>&1 &
+spinner $!
+output "SV-270824r1066961_rule" $?
+
+bash scripts/valid-bin-ownership.sh f user>/dev/null 2>&1 &
+spinner $!
+output "SV-270825r1066964_rule" $?
+
+bash scripts/valid-bin-ownership.sh d user>/dev/null 2>&1 &
+spinner $!
+output "SV-270826r1066967_rule" $?
+
+bash scripts/check-auditd.sh log-permissions f /177 >/dev/null 2>&1 &
+spinner $!
+output "SV-270827r1066970_rule" $?
+
+bash scripts/check-auditd.sh log-ownership user >/dev/null 2>&1 &
+spinner $!
+output "SV-270828r1066973_rule" $?
+
+bash scripts/check-auditd.sh log-ownership group >/dev/null 2>&1 &
+spinner $!
+output "SV-270829r1066976_rule" $?
+
+bash scripts/check-auditd.sh log-permissions d /007 >/dev/null 2>&1 &
+spinner $!
+output "SV-270830r1068397_rule" $?
+
+bash scripts/check-aide.sh audit >/dev/null 2>&1 &
+spinner $!
+output "SV-270831r1066982_rule" $?
+
+bash scripts/check-auditd.sh immute-check d /007 >/dev/null 2>&1 &
+spinner $!
+output "SV-270832r1068399_rule" $?
+
+bash scripts/check-packages.sh timesyncd >/dev/null 2>&1 &
+spinner $!
+output "SV-270645r1068357_rule" $?
+
+bash scripts/check-packages.sh ntp >/dev/null 2>&1 &
+spinner $!
+output "SV-270646r1068358_rule" $?
+
+bash scripts/check-packages.sh audispd-plugins >/dev/null 2>&1 &
+spinner $!
+output "SV-270658r1067151_rule" $?
+
+bash scripts/check-packages.sh chrony >/dev/null 2>&1 &
+spinner $!
+output "SV-270664r1068359_rule" $?
+
+bash scripts/check-limits.sh maxlogins >/dev/null 2>&1 &
+spinner $!
+output "SV-270677r1066520_rule" $?
+
+bash scripts/check-deny-and-locktime.sh >/dev/null 2>&1 &
+spinner $!
+output "SV-270690r1067126_rule" $?
+
+bash scripts/check-package-install-verification.sh  repository  >/dev/null 2>&1 &
+spinner $!
+output "SV-270695r1066574_rule" $?
+
+bash scripts/check-password-fail-delay.sh 4 >/dev/null 2>&1 &
+spinner $!
+output "SV-270706r1068361_rule" $?
 
 bash scripts/check-pam-set.sh showfailed >/dev/null 2>&1 &
 spinner $!
-output "SV-86899r1_rule" $?
+output "SV-270710r1066619_rule" $?
 
+output "SV-270734r1066691_rule" 0 N/A
 
-bash scripts/check-file-exist.sh "*.shosts" >/dev/null 2>&1 &
+bash scripts/check-sysctl.sh kernel.dmesg_restrict eq 1 >/dev/null 2>&1 &
 spinner $!
-output "SV-86901r1_rule" $?
+output "SV-270749r1067179_rule" $?
 
+output "SV-270751r1066742_rule" 0 N/A
 
-bash scripts/check-file-exist.sh "shosts.equiv" >/dev/null 2>&1 &
+output "SV-270752r1068365_rule" 0 N/A
+
+bash scripts/check-auditd.sh space_left >/dev/null 2>&1 &
 spinner $!
-output "SV-86903r1_rule" $?
+output "SV-270816r1066937_rule" $?
 
+output "SV-270817r1066940_rule" 0 N/A
 
-bash scripts/check-dns.sh >/dev/null 2>&1 &
+bash scripts/check-auditd.sh space_left_action >/dev/null 2>&1 &
 spinner $!
-output "SV-86905r1_rule" $?
+output "SV-270818r1066943_rule" $?
 
-
-bash scripts/check-sysctl.sh net.ipv4.conf.all.accept_source_route ne 0 >/dev/null 2>&1 &
+bash scripts/check-auditd.sh action_mail_acct >/dev/null 2>&1 &
 spinner $!
-output "SV-86907r1_rule" $?
+output "SV-270819r1068390_rule" $?
 
-
-bash scripts/check-sysctl.sh net.ipv4.conf.default.accept_source_route ne 0 >/dev/null 2>&1 &
+bash scripts/check-timedate.sh >/dev/null 2>&1 &
 spinner $!
-output "SV-86909r1_rule" $?
-
-
-bash scripts/check-sysctl.sh net.ipv4.icmp_echo_ignore_broadcasts ne 1 >/dev/null 2>&1 &
-spinner $!
-output "SV-86911r1_rule" $?
-
-
-bash scripts/check-sysctl.sh net.ipv4.conf.default.accept_redirects ne 0 >/dev/null 2>&1 &
-spinner $!
-output "SV-86913r2_rule" $?
-
-
-bash scripts/check-sysctl.sh net.ipv4.conf.default.send_redirects ne 0 >/dev/null 2>&1 &
-spinner $!
-output "SV-86915r2_rule" $?
-
-
-bash scripts/check-sysctl.sh net.ipv4.conf.all.send_redirects ne 0 >/dev/null 2>&1 &
-spinner $!
-output "SV-86917r2_rule" $?
-
-
-bash scripts/check-network-interface-mode.sh >/dev/null 2>&1 &
-spinner $!
-output "SV-86919r1_rule" $?
-
-
-bash scripts/check-packages.sh vsftpd >/dev/null 2>&1 &
-spinner $!
-output "SV-86923r1_rule" $?
-
-
-bash scripts/check-packages.sh tftpd >/dev/null 2>&1 &
-spinner $!
-output "SV-86925r1_rule" $?
-
-
-bash scripts/check-ssh.sh X11Forwarding  >/dev/null 2>&1 &
-spinner $!
-output "SV-86927r2_rule" $?
-
-
-bash scripts/check-packages.sh x11-common >/dev/null 2>&1 &
-spinner $!
-output "SV-86931r2_rule" $?
-
-
-bash scripts/check-sysctl.sh net.ipv4.ip_forward ne 0 >/dev/null 2>&1 &
-spinner $!
-output "SV-86933r1_rule" $?
-
-if systemctl status autofs | grep "Active:.*(running)";then
-	bash scripts/check-snmp.sh >/dev/null 2>&1 &
-	spinner $!
-	output "SV-86937r1_rule" $?
-fi
-
-bash scripts/check-sysctl.sh  net.ipv6.conf.all.accept_source_route ne 0 >/dev/null 2>&1 &
-spinner $!
-output "SV-86943r1_rule" $?
-
-if [ ${GNOMEINSTALL} -eq 1 ];then
-	bash scripts/check-screensaver-idle-delay.sh >/dev/null 2>&1 &
-	spinner $!
-	output "SV-87807r2_rule" $?
-
-
-	bash scripts/check-screensaver-idle-delay.sh >/dev/null 2>&1 &
-	spinner $!
-	output "SV-87809r2_rule" $?
-fi
-
-
-grep pwquality /etc/pam.d/common-password >/dev/null 2>&1 &
-spinner $!
-output "SV-87811r2_rule" $?
-
-
-if mount | grep -w ".*type.*nfs";then
-	bash scripts/check-nfs.sh >/dev/null 2>&1 &
-	spinner $!
-	output "SV-87813r1_rule" $?
-fi
-
-
-bash scripts/check-auditd.sh network_failure_action >/dev/null 2>&1 &
-spinner $!
-output "SV-87815r2_rule" $?
-
-
-bash scripts/check-auditd.sh f-group  >/dev/null 2>&1 &
-spinner $!
-output "SV-87817r2_rule" $?
-
-
-bash scripts/check-auditd.sh f-gshadow  >/dev/null 2>&1 &
-spinner $!
-output "SV-87819r2_rule" $?
-
-
-bash scripts/check-auditd.sh f-shadow  >/dev/null 2>&1 &
-spinner $!
-output "SV-87823r2_rule" $?
-
-
-if [ -e /etc/opasswd ];then
-	bash scripts/check-auditd.sh f-opasswd 0 > /dev/null 2>&1 &
-	spinner $!
-	output "SV-87825r2_rule" $?
-elif [ -e /etc/security/opasswd ];then
-	bash scripts/check-auditd.sh f-opasswd 1 > /dev/null 2>&1 &
-	spinner $!
-	output "SV-87825r2_rule" $?
-fi
-
-
-bash scripts/check-sysctl.sh net.ipv4.conf.all.accept_redirects ne 0 >/dev/null 2>&1 &
-spinner $!
-output "SV-87827r2_rule" $?
-
-
-bash scripts/check-wifi.sh >/dev/null 2>&1 &
-spinner $!
-output "SV-87829r1_rule" $?
-
-
-
-
-######CAT II
-
-######CAT III
-
-##########################################################################
+output "SV-270820r1066949_rule" $?
 
 if [ $ENABLE_HTML = "1" ];then
         html_overview_gen_middle        html_details_gen_middle

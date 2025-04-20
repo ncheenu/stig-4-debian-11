@@ -6,9 +6,103 @@ case $1 in
                         exit 1
                 fi
         ;;
+        timesyncd)
+                if dpkg -s systemd-timesyncd ;then
+                        exit 1
+                fi
+        ;;
+        ntp)
+                if dpkg -s ntp ;then
+                        exit 1
+                fi
+        ;;
+        rsyslog)
+                if dpkg -s rsyslog ;then
+                        exit 0
+		else
+			exit 1
+                fi
+        ;;
+        audispd-plugins)
+                if dpkg -s audispd-plugins ;then
+                        exit 0
+		else
+			exit 1
+                fi
+        ;;
+        auditd)
+                if dpkg -s auditd ;then
+                        exit 0
+		else
+			exit 1
+                fi
+        ;;
+        chrony)
+                if dpkg -s chrony ;then
+                        exit 0
+		else
+			exit 1
+                fi
+        ;;
+        apparmor)
+                if dpkg -s apparmor ;then
+                        exit 0
+		else
+			exit 1
+                fi
+        ;;
+        sssd)
+                if dpkg -s sssd ;then
+                        exit 0
+		else
+			exit 1
+                fi
+        ;;
+        vlock)
+                if dpkg -s vlock ;then
+                        exit 0
+		else
+			exit 1
+                fi
+        ;;
+        opensc)
+                if dpkg -s opensc-pkcs11 ;then
+                        exit 0
+		else
+			exit 1
+                fi
+        ;;
+        pam-pkcs11)
+                if dpkg -s libpam-pkcs11 ;then
+                        exit 0
+		else
+			exit 1
+                fi
+        ;;
+        pwquality)
+                if dpkg -s libpam-pwquality ;then
+                        exit 0
+		else
+			exit 1
+                fi
+        ;;
+	firewall)
+                if dpkg -s ufw || dpkg -s iptables; then
+                        exit 0
+		else
+			exit 1
+                fi
+        ;;
         rsh-server)
                 if dpkg -s rsh-server ;then
                         exit 1
+                fi
+        ;;
+        ssh-server)
+                if dpkg -s openssh-server ;then
+                        exit 0
+		else
+			exit 1
                 fi
         ;;
 	vsftpd)
