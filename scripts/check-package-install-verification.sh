@@ -1,4 +1,5 @@
 #!/bin/bash
+set -x
 
 COUNT=0
 case $1 in

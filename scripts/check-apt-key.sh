@@ -1,4 +1,5 @@
 #!/bin/bash
+set -x
 
 # Find the profile scripts/apt-key-finger-list.data validation key is present in the system.
 

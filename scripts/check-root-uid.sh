@@ -1,4 +1,5 @@
 #!/bin/bash
+set -x
 
 if [ "$(awk -F: '($3 == 0) {print}' /etc/passwd | wc -l)" -gt 1 ];then
         exit 1

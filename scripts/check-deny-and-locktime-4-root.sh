@@ -1,4 +1,5 @@
 #!/bin/bash
+set -x
 
 bash scripts/check-password.sh /etc/pam.d/common-auth pam_faillock deny ge 3 > /dev/null 2>&1
 CHECK_DENY=$?

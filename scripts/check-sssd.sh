@@ -1,5 +1,13 @@
 #!/bin/bash
+set -x
 case $1 in 
+    active)
+    if systemctl is-enabled sssd && systemctl is-active sssd; then
+	    exit 0
+    elif grep pam_google_authenticator.so /etc/pam.d/common-auth | grep -v '^#'; then
+	    exit 0
+    fi
+    ;;
     ldap)
     if [ -f /etc/sssd/sssd.conf ]
     then

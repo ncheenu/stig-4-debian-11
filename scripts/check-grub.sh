@@ -1,6 +1,6 @@
 #!/bin/bash
-
 set -x
+
 case $1 in 
 	removable)
 		COUNT=$(grep -v "hd0" /boot/grub/grub.cfg | grep -c "set root")

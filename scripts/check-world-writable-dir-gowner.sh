@@ -1,4 +1,5 @@
 #!/bin/bash
+set -x
 
 COUNT=`find / -xdev -perm -002 -type d -fstype ext4  -exec ls -lLdg {} \;  | grep -v "/root" | grep -cv "root"`
 

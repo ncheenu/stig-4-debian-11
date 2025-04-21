@@ -1,4 +1,5 @@
 #!/bin/bash
+set -x
 
 # $1 is will search file name.
 

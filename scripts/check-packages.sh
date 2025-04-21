@@ -1,8 +1,14 @@
 #!/bin/bash
 
+set -x
 case $1 in
         telnetd)
                 if dpkg -s telnetd ;then
+                        exit 1
+                fi
+        ;;
+        unattended-upgrades)
+                if dpkg -s unattended-upgrades ;then
                         exit 1
                 fi
         ;;
@@ -51,9 +57,11 @@ case $1 in
 			exit 1
                 fi
         ;;
-        sssd)
+        2fa)
                 if dpkg -s sssd ;then
                         exit 0
+                elif dpkg -s libpam-google-authenticator ;then
+			exit 0
 		else
 			exit 1
                 fi

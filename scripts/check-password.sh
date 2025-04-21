@@ -1,4 +1,5 @@
 #!/bin/bash
+set -x
 
 LOCATION=$1
 KEYWORD=$2

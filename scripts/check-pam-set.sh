@@ -1,4 +1,5 @@
 #!/bin/bash
+set -x
 case $1 in
 	showfailed)
 		if  grep pam_lastlog /etc/pam.d/common-session | grep -v "^#";then

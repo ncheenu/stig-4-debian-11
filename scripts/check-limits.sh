@@ -1,4 +1,5 @@
 #!/bin/bash
+set -x
 case $1 in
         core-dumps)
                 if [ "$(ulimit -c)" -ne 0 ];then

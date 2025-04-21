@@ -1,4 +1,5 @@
 #!/bin/bash
+set -x
 
 PWD_CHANGE_INTERVAL_DAY=$1
 

@@ -1,4 +1,5 @@
 #!/bin/bash
+set -x
 
 SYSCALLNAME=$1
 COUNT=`auditctl -l | grep -c "^-a.*-S.*${SYSCALLNAME}"`

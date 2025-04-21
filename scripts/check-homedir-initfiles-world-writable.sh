@@ -1,4 +1,5 @@
 #!/bin/bash
+set -x
 
 COUNT=`find /home/*/* -type f -perm -002 -exec ls -l {} \; | wc -l`
 if [ "${COUNT}" -eq 0 ];then

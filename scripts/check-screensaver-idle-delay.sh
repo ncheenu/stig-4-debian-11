@@ -1,4 +1,5 @@
 #!/bin/bash
+set -x
 
 IDLE_DELAY=`gsettings get org.gnome.desktop.session idle-delay | awk '{print $2}'`
 

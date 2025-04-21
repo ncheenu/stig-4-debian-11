@@ -1,4 +1,5 @@
 #!/bin/bash
+set -x
 
 PASSWDMAXDAYS=$1
 

@@ -1,4 +1,5 @@
 #!/bin/bash
+set -x
 
 # count file's group owner is error command(example: username:test1 uid:1000 ):
 # find /home/test1 -type f -name ".*" \! -gid 1000 -a \! -gid 0 -exec ls -l {} \; 

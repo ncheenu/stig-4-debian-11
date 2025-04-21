@@ -1,4 +1,5 @@
 #!/bin/bash
+set -x
 
 case $1 in
 	aggregation-server)
@@ -15,7 +16,7 @@ case $1 in
 		fi
 	;;
 	authlog)
-		if grep -hrE 'auth|authpriv|daemon' /etc/rsyslog.conf | grep -v "^#"; then
+		if ! grep -hrE 'auth|authpriv|daemon' /etc/rsyslog.conf | grep -v "^#"; then
 			exit 1
 		fi
 	;;

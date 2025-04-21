@@ -1,4 +1,5 @@
 #!/bin/bash
+set -x
 
 PUBCOUNT=`grep public /etc/snmp/snmpd.conf | grep -v "^#" | wc -l`
 PRICOUNT=`grep private /etc/snmp/snmpd.conf | grep -v "^#" | wc -l`

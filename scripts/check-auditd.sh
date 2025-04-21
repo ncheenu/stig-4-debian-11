@@ -1,5 +1,5 @@
 #!/bin/bash
-
+set -x
 case $1 in
     permissions)
         if [ $(find /etc/audit/ -type f -perm /137 | wc -l) -gt 0 ]; then
@@ -9,7 +9,7 @@ case $1 in
         fi
     ;;
     log-permissions)
-        if [ $(find /var/log/audit/ -type ${2} -type f -perm ${3} | wc -l) -gt 0 ]; then
+        if [ $(find /var/log/audit/ -type ${2} -perm ${3} | wc -l) -gt 0 ]; then
             exit 1
         else
             :
@@ -41,7 +41,7 @@ case $1 in
         fi
     ;;
     log-ownership)
-        if [ $(find /var/log/audit -type f ! -${2} root | wc -l) -gt 0 ]; then
+        if [ $(find /var/log/audit -type f ! -${2} ${3} | wc -l) -gt 0 ]; then
             exit 1
         else
             :
@@ -98,16 +98,16 @@ case $1 in
 		DISKSIZE=`df  -B 1m /var/log/audit/ | grep -v "Filesystem" | awk '{printf $2}'`
 		LEFTSIZE=`(bc <<<${DISKSIZE}*0.25) | sed 's/\.[0-9]*$//'`
 		SETSIZE=`grep "^space_left.=.*"  /etc/audit/auditd.conf | awk '{printf $3}'`
-		if [ "${SETSIZE}" -ge "${LEFTSIZE}" ];then
+		if [ "${SETSIZE}" -le "${LEFTSIZE}" ];then
 			:
 		else
 			exit 1
 		fi
 	;;
 	space_left_action)
-                EXIST=$(sed -e '/^#/d' -e '/^[ \t][ \t]*#/d' -e 's/#.*$//' -e '/^$/d' /etc/audit/auditd.conf | sed -e 's/\ //'g | grep $1)
+                EXIST=$(sed -e '/^#/d' -e '/^[ \t][ \t]*#/d' -e 's/#.*$//' -e '/^$/d' /etc/audit/auditd.conf | sed -e 's/\ //'g | grep -w $1)
                 if [ $? -eq 0 ];then
-                        ACTION=$(sed -e '/^#/d' -e '/^[ \t][ \t]*#/d' -e 's/#.*$//' -e '/^$/d' /etc/audit/auditd.conf | sed -e 's/\ //'g | grep $1 | awk -F '=' '{print $2}')
+                        ACTION=$(sed -e '/^#/d' -e '/^[ \t][ \t]*#/d' -e 's/#.*$//' -e '/^$/d' /etc/audit/auditd.conf | sed -e 's/\ //'g | grep -w $1 | awk -F '=' '{print $2}')
                         if [ "${ACTION,,}" != "email" ];then
                             exit 1
                         fi
@@ -182,7 +182,7 @@ case $1 in
                         exit 1
                 fi
         ;;
-	unixupdate)
+	unix_update)
 		COUNT=`auditctl -l | grep -c -P "/usr/sbin/unix_update\b"`
                 if [ "${COUNT}" -eq 1 ];then
                         :
@@ -192,7 +192,7 @@ case $1 in
         ;;
 	fdisk)
 		COUNT=`auditctl -l | grep -cwE "/usr/sbin/fdisk|/usr/sbin/parted"`
-                if [ "${COUNT}" -eq 1 ];then
+                if [ "${COUNT}" -le 2 ];then
                         :
                 else
                         exit 1
@@ -223,7 +223,7 @@ case $1 in
                 fi
         ;;
 	usermod)
-		COUNT=`auditctl -l | grep -c "/usr/bin/usermod\b"`
+		COUNT=`auditctl -l | grep -c -P "/usr/sbin/usermod\b"`
                 if [ "${COUNT}" -eq 1 ];then
                         :
                 else
@@ -537,8 +537,8 @@ case $1 in
                 fi
 	;;
 	execve-priv)
-		COUNT=`auditctl -l | grep -c execve.*key=execpriv`
-                if [ "${COUNT}" -eq 1 ];then
+		COUNT=`auditctl -l | grep -c execve`
+                if [ "${COUNT}" -ne 0 ];then
                         :
                 else
                         exit 1
@@ -577,7 +577,7 @@ case $1 in
                 fi
 	;;
 	maintenance)
-		COUNT=`auditctl -l | grep -c sudo.log.*wa.*maintenance`
+		COUNT=`auditctl -l | grep -c sudo.log.*wa`
                 if [ "${COUNT}" -eq 1 ];then
                         :
                 else

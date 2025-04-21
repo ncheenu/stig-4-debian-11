@@ -1,4 +1,5 @@
 #!/bin/bash
+set -x
 
 #Based on http://unix.stackexchange.com/questions/175146/apt-get-update-exit-status
 #And http://unix.stackexchange.com/questions/19470/list-available-updates-but-do-not-install-them

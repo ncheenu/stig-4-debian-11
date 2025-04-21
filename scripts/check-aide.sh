@@ -1,7 +1,8 @@
 #!/bin/bash
+set -x
 
 ISINSTALLED=$(dpkg -s aide |  grep -ci "Status:.*install.*ok.*installed")
-if [ "${ISINSTALLED}" -eq 0 ];then
+if [ "${ISINSTALLED}" -ne 1 ];then
 	exit 1
 fi
 
@@ -20,7 +21,7 @@ case $1 in
 		if [ $(dpkg --verify aide-common | grep "^..5" | awk '$2 != "c" { print $NF }' | xargs -I XXX bash -c "[ -f \"XXX\" ] && echo \"XXX\"" | wc -l) -gt 0 ];then
 			exit 1
 		fi
-		if ! aide -c /etc/aide/aide.conf --check; then
+		if ! aide -c /etc/aide/aide.conf --config-check; then
 			exit 1
 		fi
 	;;

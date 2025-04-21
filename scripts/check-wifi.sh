@@ -1,4 +1,5 @@
 #!/bin/bash
+set -x
 
 WIFISET=`nmcli radio wifi`
 if [ "${WIFISET}" == "enabled" ];then

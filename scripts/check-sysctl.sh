@@ -1,4 +1,5 @@
 #!/bin/bash
+set -x
 OPTION=$1
 COMPARE=$2
 CONDITION=$3

@@ -1,4 +1,5 @@
 #!/bin/bash
+set -x
 case $1 in
         Protocol)
                 if [ "$(sed -e '/^#/d' -e '/^[ \t][ \t]*#/d' -e 's/#.*$//' -e '/^$/d' /etc/ssh/sshd_config | grep -w "^Protocol" | awk '{print $2}')" -ne 2 ];then
@@ -34,7 +35,7 @@ case $1 in
                 fi
         ;;
 	ciphers)
-		if grep -i "^[[:space:]]*Ciphers aes256-gcm@openssh.com,aes128-gcm@openssh.com,aes256-ctr,aes128-ctr" /etc/ssh/sshd_config; then
+		if python3 scripts/check-member.py $(grep -i "^[[:space:]]*Ciphers" /etc/ssh/sshd_config | tr -s " " | cut -d " " -f2) aes256-gcm@openssh.com,aes128-gcm@openssh.com,aes256-ctr,aes128-ctr,aes192-ctr; then
 			:
 		else
 			exit 1 
@@ -66,7 +67,7 @@ case $1 in
 	ClientAliveInterval)
 		if grep ClientAliveInterval /etc/ssh/sshd_config | grep -v "^#";then
 			INTERVAL=`grep ClientAliveInterval /etc/ssh/sshd_config | grep -v "^#" | awk '{printf $2}'`
-			if [ ${INTERVAL} -ne 600 ];then
+			if [ ${INTERVAL} -gt 600 ];then
 				exit 1
 			fi
 		else
@@ -90,7 +91,12 @@ case $1 in
 		if grep ClientAliveCountMax /etc/ssh/sshd_config | grep -v "^#";then
 			SETVALUE=`grep ClientAliveCountMax /etc/ssh/sshd_config | grep -v "^#" | awk '{printf $2}'`
 			if [ ${SETVALUE} -ne 1 ];then
-				exit 1
+				INTERVAL=`grep ClientAliveInterval /etc/ssh/sshd_config | grep -v "^#" | awk '{printf $2}'`
+				TOTAL_INT=$(( ${SETVALUE} * ${INTERVAL} ))
+				if [ ${TOTAL_INT} -gt 600 ]; then
+					exit 1
+				fi
+				exit 0
 			fi
 		else
 			exit 1
@@ -137,14 +143,14 @@ case $1 in
 		fi
 	;;
 	macs)
-		if grep -i "^[[:space::]]*MACs hmac-sha2-512-etm@openssh.com,hmac-sha2-256-etm@openssh.com,hmac-sha2-512,hmac-sha2-256"  /etc/ssh/sshd_config;then
+		if python3 scripts/check-member.py $(grep -i "^[[:space:]]*Macs" /etc/ssh/sshd_config | tr -s " " | cut -d " " -f2) hmac-sha2-512-etm@openssh.com,hmac-sha2-256-etm@openssh.com,hmac-sha2-512,hmac-sha2-256; then
 			:
 		else
 			exit 1
 		fi
 	;;
 	kex)
-		if grep -i "^[[:space::]]*KexAlgorithms ecdh-sha2-nistp521,ecdh-sha2-nistp384,ecdh-sha2-nistp256,diffie-hellman-group-exchange-sha256,diffie-hellman-group16-sha512,diffie-hellman-group14-sha256$"  /etc/ssh/sshd_config;then
+		if python3 scripts/check-member.py $(grep -i "^[[:space:]]*KexAlgorithms" /etc/ssh/sshd_config | tr -s " " | cut -d " " -f2) ecdh-sha2-nistp521,ecdh-sha2-nistp384,ecdh-sha2-nistp256,diffie-hellman-group-exchange-sha256,diffie-hellman-group16-sha512,diffie-hellman-group14-sha256; then
 			:
 		else
 			exit 1
@@ -221,7 +227,7 @@ case $1 in
 	X11Forwarding)
 		if grep X11Forwarding /etc/ssh/sshd_config | grep -v "^#";then
                         SETVALUE=`grep X11Forwarding /etc/ssh/sshd_config | grep -v "^#" | awk '{printf $2}'`
-                        if [ "${SETVALUE}" != "yes" ];then
+                        if [ "${SETVALUE}" != "no" ];then
                                 exit 1
                         fi
                 else

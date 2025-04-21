@@ -1,4 +1,5 @@
 #!/bin/bash
+set -x
 
 SESSION_LOCK=`gsettings get org.gnome.desktop.screensaver lock-enabled`
 

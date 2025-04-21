@@ -1,4 +1,5 @@
 #!/bin/bash
+set -x
 
 if grep "^hosts:.*files\|hosts:.*dns" /etc/nsswitch.conf;then
 	COUNTDNSSER=`grep -c "^nameserver" /etc/resolv.conf`

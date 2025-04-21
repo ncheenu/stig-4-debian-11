@@ -1,4 +1,5 @@
 #!/bin/bash
+set -x
 
 MOUNTNAME=$1
 case $2 in

@@ -1,4 +1,5 @@
 #!/bin/bash
+set -x
 
 # count initialization file's owner is error command(example: username:test1 uid:1000 ):
 # find /home/test1/ -type f -name ".*" \! -uid 1000 -a \! -uid 0 -exec ls -l {} \;

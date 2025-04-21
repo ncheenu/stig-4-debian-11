@@ -1,4 +1,5 @@
 #!/bin/bash
+set -x
 
 if [ "$(grep -i tmout /etc/bash.bashrc | grep -v "^#" | wc -l)" -ne 0 ]; then
 	VTMOUT=`grep -i tmout /etc/bash.bashrc | awk -F = '{printf $2}'`

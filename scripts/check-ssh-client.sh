@@ -1,21 +1,22 @@
 #!/bin/bash
+set -x
 case $1 in
 	ciphers)
-		if grep -i "^[[:space:]]*Ciphers aes256-gcm@openssh.com,aes128-gcm@openssh.com,aes256-ctr,aes128-ctr" /etc/ssh/ssh_config; then
+		if python3 scripts/check-member.py $(grep -i "^[[:space:]]*Ciphers" /etc/ssh/ssh_config | tr -s " " | cut -d " " -f2) aes256-gcm@openssh.com,aes128-gcm@openssh.com,aes256-ctr,aes128-ctr,aes192-ctr; then
 			:
 		else
 			exit 1 
 		fi
 	;;
 	macs)
-		if grep -i "^[[:space::]]*MACs hmac-sha2-512-etm@openssh.com,hmac-sha2-256-etm@openssh.com,hmac-sha2-512,hmac-sha2-256"  /etc/ssh/ssh_config;then
+		if python3 scripts/check-member.py $(grep -i "^[[:space:]]*Macs" /etc/ssh/ssh_config | tr -s " " | cut -d " " -f2) hmac-sha2-512-etm@openssh.com,hmac-sha2-256-etm@openssh.com,hmac-sha2-512,hmac-sha2-256; then
 			:
 		else
 			exit 1
 		fi
 	;;
 	kex)
-		if grep -i "^[[:space::]]*KexAlgorithms ecdh-sha2-nistp521,ecdh-sha2-nistp384,ecdh-sha2-nistp256,diffie-hellman-group-exchange-sha256,diffie-hellman-group16-sha512,diffie-hellman-group14-sha256$"  /etc/ssh/ssh_config;then
+		if python3 scripts/check-member.py $(grep -i "^[[:space:]]*Macs" /etc/ssh/ssh_config | tr -s " " | cut -d " " -f2) hmac-sha2-512-etm@openssh.com,hmac-sha2-256-etm@openssh.com,hmac-sha2-512,hmac-sha2-256; then
 			:
 		else
 			exit 1

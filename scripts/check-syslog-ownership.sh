@@ -1,7 +1,8 @@
 #!/bin/bash
+set -x
 case $1 in
     owner)
-        if [[ "$(stat -c "%U" /var/log)" != "root" ]]; then
+        if [[ "$(stat -c "%${2}" /var/log)" != "root" ]]; then
             exit 1
         fi
         ;;
@@ -10,7 +11,12 @@ case $1 in
             exit 1
         fi
         ;;
-    gowner)
+    f-owner)
+        if [[ "$(stat -c "%U" /var/log/syslog)" != "root" ]]; then
+            exit 1
+        fi
+        ;;
+    f-gowner)
         if [[ "$(stat -c "%G" /var/log/syslog)" != "adm" ]]; then
             exit 1
         fi

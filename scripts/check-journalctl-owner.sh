@@ -1,4 +1,5 @@
 #!/bin/bash
+set -x
 if [ $(find /usr/bin/journalctl -exec stat -c "%n %${1}" {} \; | grep -v root | wc -l ) -gt 0 ]; then
     exit 1
 fi

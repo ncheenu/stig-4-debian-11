@@ -1,4 +1,5 @@
 #!/bin/bash
+set -x
 
 if [ -f "/etc/login.defs" ];then
         VFAIL_DELAY=$1 # seconds

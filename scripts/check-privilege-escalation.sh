@@ -1,5 +1,6 @@
 #!/bin/bash
 
+set -x
 case $1 in
         sudo)
                 if grep -i "NOPASSWD" /etc/sudoers /etc/sudoers.d/* | sed -e '/^#/d' -e '/^[ \t][ \t]*#/d' -e 's/#.*$//' -e '/^$/d' | grep -i "NOPASSWD";then

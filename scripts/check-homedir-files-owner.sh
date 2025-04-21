@@ -1,4 +1,5 @@
 #!/bin/bash
+set -x
 
 # count file's owner is error command(example: username:test1 uid:1000 ):
 # find /home/test1  \! -uid 1000  -exec ls -l {} \; 

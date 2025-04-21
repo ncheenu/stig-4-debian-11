@@ -1,4 +1,5 @@
 #!/bin/bash
+set -x
 
 for line in $(egrep ":[0-9]{4}:" /etc/passwd | cut -d: -f6)
 do

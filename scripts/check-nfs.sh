@@ -1,4 +1,5 @@
 #!/bin/bash
+set -x
 
 if mount | grep ".*type.*nfs";then
         COUNT1=`mount | grep -c ".*type.*nfs"`

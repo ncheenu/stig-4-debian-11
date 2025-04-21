@@ -1,4 +1,5 @@
 #!/bin/bash
+set -x
 
 # count file's owner is error command(example: username:test1 uid:1000 ):
 # grep -d skip ":/home/test1"  /home/test1/.* | grep -v "#" | grep -v ".viminfo" | grep -v ".bash_history" | wc -l

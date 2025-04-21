@@ -1,4 +1,5 @@
 #!/bin/bash
+set -x
 
 if [ "$(pwck -r | grep -c "no group")" -ne 0 ];then
         exit 1
