@@ -1,3 +1,4 @@
+import sys
 import xml.etree.ElementTree as ET
 import html
 
@@ -8,7 +9,7 @@ content_by_sev_g = {
 }
 
 # Load and parse XML
-tree = ET.parse("U_CAN_Ubuntu_24-04_LTS_STIG_V1R1_Manual-xccdf.xml")
+tree = ET.parse(sys.argv[1])
 root = tree.getroot()
 
 # Extract namespace dynamically
@@ -19,7 +20,7 @@ for elem in root.iter():
 ns = {'xccdf': xmlns}
 
 # Get all idrefs (Group IDs) under MAC-1_Public profile
-profile = root.find(".//xccdf:Profile[@id='MAC-1_Public']", ns)
+profile = root.find(f".//xccdf:Profile[@id='{sys.argv[2]}']", ns)
 group_ids = {s.attrib['idref'] for s in profile.findall("xccdf:select", ns)}
 
 # Traverse all Groups and extract desired fields
@@ -52,7 +53,7 @@ for group in root.findall(".//xccdf:Group", ns):
             })
 
 # Traverse and print
-with open("stig-4-debian-u.txt", "w") as f:
+with open(sys.argv[3], "w") as f:
     for cat_list in content_by_sev_g.values():
         for cat_ent in cat_list:
             f.write(f"Rule ID: {cat_ent['rule_id']}\n")
